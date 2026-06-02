@@ -1,8 +1,8 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, LessThanOrEqual, In } from 'typeorm';
 import { Cron, CronExpression } from '@nestjs/schedule';
+import { InjectRepository } from '@nestjs/typeorm';
 import * as nodemailer from 'nodemailer';
+import { In, LessThanOrEqual, Repository } from 'typeorm';
 import { MailQueue, MailStatus, MailType } from './entities/mail-queue.entity';
 import { welcomeTemplate } from './templates/welcome.template';
 
@@ -13,8 +13,8 @@ export interface WelcomeEmailData {
 }
 
 const MAX_ATTEMPTS = Number(process.env.MAIL_MAX_ATTEMPTS ?? 5);
-const BATCH_SIZE   = Number(process.env.MAIL_BATCH_SIZE ?? 10);
-const BATCH_DELAY  = Number(process.env.MAIL_BATCH_DELAY_MS ?? 2000);
+const BATCH_SIZE = Number(process.env.MAIL_BATCH_SIZE ?? 10);
+const BATCH_DELAY = Number(process.env.MAIL_BATCH_DELAY_MS ?? 2000);
 
 /** Backoff exponencial: intento 1→2min, 2→4min, 3→8min, 4→16min, 5→32min */
 function backoffMs(attempt: number): number {
@@ -31,8 +31,8 @@ export class MailService {
     private queueRepo: Repository<MailQueue>,
   ) {
     this.transporter = nodemailer.createTransport({
-      host:   process.env.MAIL_HOST,
-      port:   Number(process.env.MAIL_PORT ?? 587),
+      host: process.env.MAIL_HOST,
+      port: Number(process.env.MAIL_PORT ?? 587),
       secure: process.env.MAIL_SECURE === 'true',
       auth: {
         user: process.env.MAIL_USER,
@@ -49,10 +49,10 @@ export class MailService {
    */
   async enqueueWelcome(data: WelcomeEmailData): Promise<MailQueue> {
     const entry = this.queueRepo.create({
-      type:    MailType.WELCOME,
+      type: MailType.WELCOME,
       toEmail: data.email,
       payload: data,
-      status:  MailStatus.PENDING,
+      status: MailStatus.PENDING,
     });
     const saved = await this.queueRepo.save(entry);
     // Intentar envío inmediato (no bloquea el registro)
@@ -70,15 +70,15 @@ export class MailService {
     // Persistir todos en un solo insert
     const entries = users.map((u) =>
       this.queueRepo.create({
-        type:    MailType.WELCOME,
+        type: MailType.WELCOME,
         toEmail: u.email,
         payload: u,
-        status:  MailStatus.PENDING,
+        status: MailStatus.PENDING,
       }),
     );
     const saved = await this.queueRepo.save(entries);
 
-    let sent   = 0;
+    let sent = 0;
     let queued = 0;
 
     for (let i = 0; i < saved.length; i += BATCH_SIZE) {
@@ -103,7 +103,7 @@ export class MailService {
   /** [ADMIN] Forzar reenvío de un mail específico por ID */
   async retryOne(id: number): Promise<MailQueue> {
     const entry = await this.queueRepo.findOneOrFail({ where: { id } });
-    entry.status     = MailStatus.PENDING;
+    entry.status = MailStatus.PENDING;
     entry.retryAfter = null as unknown as Date;
     await this.queueRepo.save(entry);
     await this.dispatchOne(entry);
@@ -128,7 +128,7 @@ export class MailService {
     const now = new Date();
     const pending = await this.queueRepo.find({
       where: {
-        status:     In([MailStatus.PENDING, MailStatus.FAILED]),
+        status: In([MailStatus.PENDING, MailStatus.FAILED]),
         retryAfter: LessThanOrEqual(now),
       },
       take: 50, // procesar hasta 50 por ciclo
@@ -148,23 +148,25 @@ export class MailService {
     try {
       const html = this.buildHtml(entry);
       await this.transporter.sendMail({
-        from:    `"${process.env.MAIL_FROM_NAME ?? 'Triunfoneta'}" <${process.env.MAIL_FROM_ADDRESS}>`,
-        to:      entry.toEmail,
+        from: `"${process.env.MAIL_FROM_NAME ?? 'Triunfoneta'}" <${process.env.MAIL_FROM_ADDRESS}>`,
+        to: entry.toEmail,
         subject: this.buildSubject(entry),
         html,
       });
 
-      entry.status  = MailStatus.SENT;
-      entry.sentAt  = new Date();
+      entry.status = MailStatus.SENT;
+      entry.sentAt = new Date();
       await this.queueRepo.save(entry);
       this.logger.log(`[MAIL] ✓ ${entry.type} → ${entry.toEmail}`);
     } catch (err) {
       entry.attempts++;
-      const errorMessage = err instanceof Error
-        ? err.message
-        : typeof err === 'string'
-          ? err
-          : JSON.stringify(err, Object.getOwnPropertyNames(err)) || 'Unknown error';
+      const errorMessage =
+        err instanceof Error
+          ? err.message
+          : typeof err === 'string'
+            ? err
+            : JSON.stringify(err, Object.getOwnPropertyNames(err)) ||
+              'Unknown error';
       entry.lastError = errorMessage.substring(0, 500);
 
       if (entry.attempts >= MAX_ATTEMPTS) {
@@ -173,11 +175,11 @@ export class MailService {
           `[MAIL] ✗ AGOTADO tras ${entry.attempts} intentos → ${entry.toEmail}: ${entry.lastError}`,
         );
       } else {
-        entry.status     = MailStatus.FAILED;
+        entry.status = MailStatus.FAILED;
         entry.retryAfter = new Date(Date.now() + backoffMs(entry.attempts));
         this.logger.warn(
           `[MAIL] ✗ Intento ${entry.attempts}/${MAX_ATTEMPTS} → ${entry.toEmail}. ` +
-          `Reintento en ~${Math.round(backoffMs(entry.attempts) / 60000)}min`,
+            `Reintento en ~${Math.round(backoffMs(entry.attempts) / 60000)}min`,
         );
       }
 
@@ -197,8 +199,10 @@ export class MailService {
 
   private buildSubject(entry: MailQueue): string {
     switch (entry.type) {
-      case MailType.WELCOME: return '¡Bienvenido/a a Triunfoneta!';
-      default: return 'Triunfoneta';
+      case MailType.WELCOME:
+        return '¡Bienvenido/a a Triunfoneta!';
+      default:
+        return 'Triunfoneta';
     }
   }
 }

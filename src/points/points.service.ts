@@ -39,7 +39,7 @@ export class PointsService {
       await manager.save(user);
 
       const tx = manager.create(PointTransaction, {
-        userId,
+        user,
         amount,
         reason,
         referenceId,
@@ -77,7 +77,7 @@ export class PointsService {
       await manager.save(user);
 
       const tx = manager.create(PointTransaction, {
-        userId,
+        user,
         amount: -amount,
         reason,
         referenceId,

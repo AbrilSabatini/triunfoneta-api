@@ -45,28 +45,6 @@ async function bootstrap() {
 
     const document = SwaggerModule.createDocument(app, config);
 
-    // ── Protección con usuario/contraseña ──────────────────────────────────
-    // Usar middleware básico de HTTP para no exponer la doc en producción.
-    const swaggerUser = process.env.SWAGGER_USER ?? 'admin';
-    const swaggerPass = process.env.SWAGGER_PASS ?? 'triunfo2025';
-
-    app.use('/api/docs', (req, res, next) => {
-      const auth = req.headers['authorization'];
-      if (auth) {
-        const [scheme, encoded] = auth.split(' ');
-        if (scheme === 'Basic' && encoded) {
-          const [user, pass] = Buffer.from(encoded, 'base64')
-            .toString()
-            .split(':');
-          if (user === swaggerUser && pass === swaggerPass) {
-            return next();
-          }
-        }
-      }
-      res.setHeader('WWW-Authenticate', 'Basic realm="Triunfoneta Docs"');
-      res.status(401).send('Acceso no autorizado a la documentación.');
-    });
-
     SwaggerModule.setup('api/docs', app, document, {
       swaggerOptions: {
         persistAuthorization: true, // el JWT no se borra al recargar
@@ -79,7 +57,6 @@ async function bootstrap() {
     console.log(
       `Swagger disponible en http://localhost:${process.env.PORT ?? 3000}/api/docs`,
     );
-    console.log(`   Usuario: ${swaggerUser} / Contraseña: ${swaggerPass}`);
   }
   // ──────────────────────────────────────────────────────────────────────────
 

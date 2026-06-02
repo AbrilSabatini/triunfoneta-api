@@ -17,8 +17,12 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express';
 import {
   ApiBearerAuth,
+  ApiBody,
   ApiConsumes,
   ApiOperation,
+  ApiParam,
+  ApiQuery,
+  ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
 import { Roles } from '../common/decorators/roles.decorator';
@@ -28,6 +32,7 @@ import {
   CreateStickerDto,
   QueryUsersDto,
   UpdateStickerDto,
+  UpdateUserAdminDto,
   UpdateUserDto,
 } from './dto/users.dto';
 import { UserRole } from './entities/user.entity';
@@ -43,101 +48,248 @@ export class UsersController {
   // ─── Perfil propio ────────────────────────────────────────────────────────
 
   @Get('users/me')
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({
     summary: 'Perfil del usuario autenticado',
     description:
-      'Devuelve el perfil completo del usuario autenticado junto con su saldo actual de puntos.',
+      'Devuelve el perfil completo del usuario autenticado junto con su saldo actual de puntos ' +
+      'y la relación con su área.',
   })
-  @UseGuards(JwtAuthGuard)
+  @ApiResponse({
+    status: 200,
+    description: 'Perfil del usuario',
+    schema: {
+      example: {
+        id: 1,
+        email: 'ana@triunfo.com',
+        fullName: 'Ana García',
+        role: 'user',
+        points: 150,
+        avatarUrl: '/uploads/avatars/abc123.jpg',
+        stickerCreated: true,
+        isActive: true,
+        area: { id: 3, name: 'Marketing', color: '#e63946', emoji: '🎯' },
+        createdAt: '2025-06-01T10:00:00.000Z',
+      },
+    },
+  })
+  @ApiResponse({ status: 401, description: 'Token inválido o expirado' })
   getMe(@Request() req) {
     return this.usersService.getMe(req.user.id);
   }
 
   @Patch('users/me')
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({
     summary: 'Actualizar perfil propio',
-    description: 'Permite modificar los datos básicos del usuario autenticado.',
+    description:
+      'Permite modificar el nombre y/o el área del usuario autenticado.',
   })
-  @UseGuards(JwtAuthGuard)
+  @ApiResponse({ status: 200, description: 'Perfil actualizado' })
+  @ApiResponse({ status: 400, description: 'Datos inválidos' })
+  @ApiResponse({ status: 401, description: 'No autenticado' })
   updateMe(@Request() req, @Body() dto: UpdateUserDto) {
     return this.usersService.updateMe(req.user.id, dto);
   }
 
   @Post('users/me/avatar')
-  @ApiOperation({
-    summary: 'Subir avatar',
-    description: 'Sube o reemplaza la foto de perfil del usuario.',
-  })
-  @ApiConsumes('multipart/form-data')
   @UseGuards(JwtAuthGuard)
   @UseInterceptors(FileInterceptor('file', multerAvatarConfig))
+  @ApiOperation({
+    summary: 'Subir foto de perfil',
+    description:
+      'Sube o reemplaza la foto de perfil del usuario (JPG, PNG o WebP, máx. 5MB). ' +
+      'Esta foto se usa en la app pero no en la figurita del álbum.',
+  })
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        file: {
+          type: 'string',
+          format: 'binary',
+          description: 'Imagen JPG, PNG o WebP (máx. 5MB)',
+        },
+      },
+      required: ['file'],
+    },
+  })
+  @ApiResponse({
+    status: 201,
+    description: 'Avatar actualizado, devuelve el usuario con avatarUrl nuevo',
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Tipo de archivo no permitido o tamaño excedido',
+  })
   async uploadAvatar(
     @Request() req,
     @UploadedFile() file: Express.Multer.File,
   ) {
-    const avatarUrl = `/uploads/avatars/${file.filename}`;
-    return this.usersService.updateAvatar(req.user.id, avatarUrl);
+    return this.usersService.updateAvatar(
+      req.user.id,
+      `/uploads/avatars/${file.filename}`,
+    );
   }
 
+  // ─── Figurita propia ──────────────────────────────────────────────────────
+
   @Get('users/me/sticker')
-  @ApiOperation({
-    summary: 'Mi figurita',
-    description: 'Devuelve la figurita asociada al usuario autenticado.',
-  })
   @UseGuards(JwtAuthGuard)
+  @ApiOperation({
+    summary: 'Ver mi figurita',
+    description:
+      'Devuelve la figurita del usuario autenticado. ' +
+      'Si aún no fue creada, responde con 404 y un mensaje orientativo.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Figurita del usuario',
+    schema: {
+      example: {
+        id: 12,
+        userId: 1,
+        nickname: 'Anita',
+        photoUrl: '/uploads/stickers/xyz.jpg',
+        useAvatar: false,
+        avatarColor: '#e63946',
+        funFact: 'Campeona del metegol de la oficina.',
+        yearsInCompany: 3,
+        position: 'Marketing Lead',
+        area: 'Marketing',
+        stickerNumber: 42,
+        createdAt: '2025-06-01T10:00:00.000Z',
+      },
+    },
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'El usuario todavía no creó su figurita',
+  })
   getMySticker(@Request() req) {
     return this.usersService.getMySticker(req.user.id);
   }
 
   @Post('users/me/sticker')
-  @ApiOperation({
-    summary: 'Crear figurita',
-    description:
-      'Crea la figurita del usuario. Solo puede ejecutarse una vez y otorga los puntos de bienvenida configurados.',
-  })
   @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.CREATED)
+  @ApiOperation({
+    summary: 'Crear figurita (una sola vez)',
+    description:
+      'Crea la figurita del usuario. **Solo puede ejecutarse una vez por cuenta.** ' +
+      `Al crearse otorga los puntos configurados en STICKER_CREATION_POINTS (default: 50pts). ` +
+      'Si el usuario no quiere subir foto puede usar useAvatar=true.',
+  })
+  @ApiResponse({
+    status: 201,
+    description: 'Figurita creada y puntos acreditados',
+    schema: {
+      example: {
+        id: 12,
+        nickname: 'Anita',
+        stickerNumber: 42,
+        area: 'Marketing',
+      },
+    },
+  })
+  @ApiResponse({
+    status: 409,
+    description: 'La figurita ya fue creada para este usuario',
+  })
   createSticker(@Request() req, @Body() dto: CreateStickerDto) {
     return this.usersService.createSticker(req.user.id, dto);
   }
 
   @Patch('users/me/sticker')
-  @ApiOperation({
-    summary: 'Actualizar figurita',
-    description:
-      'Actualiza los datos de la figurita del usuario sin otorgar puntos adicionales.',
-  })
   @UseGuards(JwtAuthGuard)
+  @ApiOperation({
+    summary: 'Editar figurita',
+    description:
+      'Actualiza los datos editables de la figurita (nickname, funFact, yearsInCompany, position, avatar). ' +
+      'No otorga puntos adicionales. ' +
+      'Para reemplazar la foto usar el endpoint POST users/me/sticker/photo.',
+  })
+  @ApiResponse({ status: 200, description: 'Figurita actualizada' })
+  @ApiResponse({
+    status: 404,
+    description: 'El usuario todavía no creó su figurita',
+  })
   updateMySticker(@Request() req, @Body() dto: UpdateStickerDto) {
     return this.usersService.updateMySticker(req.user.id, dto);
   }
 
   @Post('users/me/sticker/photo')
+  @UseGuards(JwtAuthGuard)
+  @UseInterceptors(FileInterceptor('file', multerStickerConfig))
   @ApiOperation({
     summary: 'Subir foto de figurita',
     description:
-      'Sube o reemplaza la foto de la figurita. Si useAvatar=true, se cambia automáticamente a false.',
+      'Sube o reemplaza la foto que aparece en la figurita del álbum. ' +
+      'Si el usuario tenía `useAvatar=true`, se cambia automáticamente a `false`. ' +
+      'Para volver al avatar, usar PATCH users/me/sticker con useAvatar=true.',
   })
   @ApiConsumes('multipart/form-data')
-  @UseGuards(JwtAuthGuard)
-  @UseInterceptors(FileInterceptor('file', multerStickerConfig))
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        file: {
+          type: 'string',
+          format: 'binary',
+          description: 'Imagen JPG, PNG o WebP (máx. 5MB)',
+        },
+      },
+      required: ['file'],
+    },
+  })
+  @ApiResponse({ status: 201, description: 'Foto de figurita actualizada' })
+  @ApiResponse({
+    status: 404,
+    description: 'El usuario todavía no creó su figurita',
+  })
   async uploadStickerPhoto(
     @Request() req,
     @UploadedFile() file: Express.Multer.File,
   ) {
-    const photoUrl = `/uploads/stickers/${file.filename}`;
-    return this.usersService.updateStickerPhoto(req.user.id, photoUrl);
+    return this.usersService.updateStickerPhoto(
+      req.user.id,
+      `/uploads/stickers/${file.filename}`,
+    );
   }
 
   // ─── Perfil público (para zona de intercambios) ───────────────────────────
 
   @Get('users/:id/profile')
-  @ApiOperation({
-    summary: 'Perfil público',
-    description:
-      'Devuelve la información pública de un usuario junto con su figurita para la zona de intercambios.',
-  })
   @UseGuards(JwtAuthGuard)
+  @ApiOperation({
+    summary: 'Perfil público de un compañero',
+    description:
+      'Devuelve el nombre, área y figurita de otro usuario. ' +
+      'Usado en la zona de intercambios para que ambas partes puedan ver ' +
+      'las figuritas involucradas antes de confirmar el canje.',
+  })
+  @ApiParam({
+    name: 'id',
+    type: Number,
+    description: 'ID del usuario a consultar',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Perfil público + figurita',
+    schema: {
+      example: {
+        user: {
+          id: 2,
+          fullName: 'Pablo García',
+          area: { name: 'Comercial' },
+          avatarUrl: null,
+        },
+        sticker: { id: 7, nickname: 'Pabli', stickerNumber: 7, funFact: '...' },
+      },
+    },
+  })
+  @ApiResponse({ status: 404, description: 'Usuario no encontrado' })
   getPublicProfile(@Param('id', ParseIntPipe) id: number) {
     return this.usersService.findPublicProfile(id);
   }
@@ -145,26 +297,104 @@ export class UsersController {
   // ─── Admin ────────────────────────────────────────────────────────────────
 
   @Get('admin/users')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.ADMIN)
   @ApiOperation({
     summary: '[ADMIN] Listar usuarios',
     description:
-      'Lista usuarios con filtros opcionales de búsqueda, área y paginación.',
+      'Lista todos los usuarios con filtros opcionales. ' +
+      'Permite buscar por nombre parcial, filtrar por área y paginar.',
   })
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(UserRole.ADMIN)
+  @ApiQuery({
+    name: 'search',
+    required: false,
+    description: 'Búsqueda por nombre (parcial)',
+  })
+  @ApiQuery({
+    name: 'areaId',
+    required: false,
+    type: Number,
+    description: 'Filtrar por ID de área',
+  })
+  @ApiQuery({ name: 'page', required: false, type: Number, example: 1 })
+  @ApiQuery({ name: 'limit', required: false, type: Number, example: 20 })
+  @ApiResponse({
+    status: 200,
+    description: 'Lista paginada de usuarios',
+    schema: {
+      example: {
+        data: [
+          {
+            id: 1,
+            fullName: 'Ana García',
+            email: 'ana@triunfo.com',
+            points: 150,
+          },
+        ],
+        total: 42,
+      },
+    },
+  })
   findAll(@Query() query: QueryUsersDto) {
     return this.usersService.findAll(query);
   }
 
   @Get('admin/users/stats')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.ADMIN)
   @ApiOperation({
     summary: '[ADMIN] Estadísticas de usuarios',
     description:
-      'Devuelve métricas generales del sistema y distribución por áreas.',
+      'Devuelve métricas generales: total de usuarios, cuántos ya crearon su figurita ' +
+      'y distribución por área. Útil para el dashboard del panel de administración.',
   })
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(UserRole.ADMIN)
+  @ApiResponse({
+    status: 200,
+    schema: {
+      example: {
+        total: 120,
+        withSticker: 87,
+        byArea: { Marketing: 15, Comercial: 30, Tecnología: 12 },
+      },
+    },
+  })
   getStats() {
     return this.usersService.getStats();
+  }
+
+  @Get('admin/users/:id')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.ADMIN)
+  @ApiOperation({
+    summary: '[ADMIN] Ver detalle de un usuario',
+    description:
+      'Devuelve el perfil completo de cualquier usuario, incluyendo puntos y estado de cuenta.',
+  })
+  @ApiParam({ name: 'id', type: Number })
+  @ApiResponse({ status: 200, description: 'Perfil completo del usuario' })
+  @ApiResponse({ status: 404, description: 'Usuario no encontrado' })
+  findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.usersService.findById(id);
+  }
+
+  @Patch('admin/users/:id')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.ADMIN)
+  @ApiOperation({
+    summary: '[ADMIN] Editar usuario',
+    description:
+      'Permite modificar cualquier dato de un usuario, incluyendo `isActive` para ' +
+      'activar o desactivar la cuenta. Una cuenta inactiva no puede iniciar sesión ' +
+      'aunque su token aún no haya expirado.',
+  })
+  @ApiParam({ name: 'id', type: Number })
+  @ApiResponse({ status: 200, description: 'Usuario actualizado' })
+  @ApiResponse({ status: 404, description: 'Usuario no encontrado' })
+  updateByAdmin(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() dto: UpdateUserAdminDto,
+    @Request() req,
+  ) {
+    return this.usersService.updateByAdmin(id, dto, req.user);
   }
 }
