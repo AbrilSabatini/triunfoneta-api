@@ -169,6 +169,7 @@ export class UsersService {
     const where: any = {};
     if (areaId) where.areaId = areaId;
     if (search) where.fullName = ILike(`%${search}%`);
+    where.role = UserRole.USER;
 
     const [data, total] = await this.usersRepo.findAndCount({
       where,

@@ -49,7 +49,7 @@ export class User {
   avatarUrl: string;
 
   @ApiProperty({ default: 0 })
-  @Column({ default: 0 })
+  @Column({ type: 'int', default: 0 })
   points: number;
 
   @ApiProperty({ default: true })

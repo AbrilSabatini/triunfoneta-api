@@ -296,11 +296,10 @@ export class UsersController {
 
   // ─── Admin ────────────────────────────────────────────────────────────────
 
-  @Get('admin/users')
+  @Get('users')
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(UserRole.ADMIN)
   @ApiOperation({
-    summary: '[ADMIN] Listar usuarios',
+    summary: 'Listar usuarios con rol user',
     description:
       'Lista todos los usuarios con filtros opcionales. ' +
       'Permite buscar por nombre parcial, filtrar por área y paginar.',

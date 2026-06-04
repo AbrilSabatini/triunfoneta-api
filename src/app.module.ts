@@ -15,6 +15,9 @@ import { UsersModule } from './users/users.module';
 import { Area } from './areas/entities/area.entity';
 import { MailQueue } from './mail/entities/mail-queue.entity';
 import { PointTransaction } from './points/entities/point-transaction.entity';
+import { Match } from './prode/entities/match.entity';
+import { ProdePick } from './prode/entities/prode-pick.entity';
+import { ProdeModule } from './prode/prode.module';
 import { Sticker } from './users/entities/sticker.entity';
 import { User } from './users/entities/user.entity';
 
@@ -26,9 +29,20 @@ import { User } from './users/entities/user.entity';
     TypeOrmModule.forRoot({
       type: 'postgres',
       url: process.env.DATABASE_URL,
-      entities: [User, Sticker, PointTransaction, Area, MailQueue],
+      entities: [
+        User,
+        Sticker,
+        PointTransaction,
+        Area,
+        MailQueue,
+        Match,
+        ProdePick,
+      ],
       synchronize: process.env.NODE_ENV !== 'production',
       logging: process.env.NODE_ENV === 'development',
+      extra: {
+        timezone: 'America/Argentina/Buenos_Aires',
+      },
     }),
 
     ServeStaticModule.forRoot({
@@ -41,6 +55,7 @@ import { User } from './users/entities/user.entity';
     UsersModule,
     PointsModule,
     MailModule,
+    ProdeModule,
   ],
 })
 export class AppModule {}

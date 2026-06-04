@@ -33,9 +33,11 @@ export class PointsService {
     referenceId?: number,
   ): Promise<PointTransaction> {
     return this.dataSource.transaction(async (manager) => {
-      const user = await manager.findOneOrFail(User, { where: { id: userId } });
+      const user = await manager.findOneOrFail(User, {
+        where: { id: userId },
+      });
 
-      user.points += amount;
+      user.points = Number(user.points) + amount;
       await manager.save(user);
 
       const tx = manager.create(PointTransaction, {
@@ -65,7 +67,11 @@ export class PointsService {
     referenceId?: number,
   ): Promise<PointTransaction> {
     return this.dataSource.transaction(async (manager) => {
-      const user = await manager.findOneOrFail(User, { where: { id: userId } });
+      const user = await manager.findOneOrFail(User, {
+        where: { id: Number(userId) },
+      });
+
+      user.points = Number(user.points);
 
       if (user.points < amount) {
         throw new BadRequestException(
