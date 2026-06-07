@@ -23,6 +23,10 @@ import { PointTransaction } from './points/entities/point-transaction.entity';
 import { Match } from './prode/entities/match.entity';
 import { ProdePick } from './prode/entities/prode-pick.entity';
 import { ProdeModule } from './prode/prode.module';
+import { TriviaAttempt } from './trivia/entities/trivia-attempt.entity';
+import { TriviaOption } from './trivia/entities/trivia-option.entity';
+import { TriviaQuestion } from './trivia/entities/trivia-question.entity';
+import { TriviaModule } from './trivia/trivia.module';
 import { Sticker } from './users/entities/sticker.entity';
 import { User } from './users/entities/user.entity';
 
@@ -45,12 +49,12 @@ import { User } from './users/entities/user.entity';
         Pack,
         UserSticker,
         TradeOffer,
+        TriviaQuestion,
+        TriviaOption,
+        TriviaAttempt,
       ],
       synchronize: process.env.NODE_ENV !== 'production',
       logging: process.env.NODE_ENV === 'development',
-      extra: {
-        timezone: 'America/Argentina/Buenos_Aires',
-      },
     }),
 
     ServeStaticModule.forRoot({
@@ -66,6 +70,7 @@ import { User } from './users/entities/user.entity';
     ProdeModule,
     PacksModule,
     AlbumModule,
+    TriviaModule,
   ],
 })
 export class AppModule {}
