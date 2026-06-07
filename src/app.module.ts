@@ -6,14 +6,19 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { join } from 'path';
 import 'reflect-metadata';
 
+import { AlbumModule } from './album/album.module';
 import { AreasModule } from './areas/areas.module';
 import { AuthModule } from './auth/auth.module';
 import { MailModule } from './mail/mail.module';
+import { PacksModule } from './packs/packs.module';
 import { PointsModule } from './points/points.module';
 import { UsersModule } from './users/users.module';
 
+import { TradeOffer } from './album/entities/trade-offer.entity';
 import { Area } from './areas/entities/area.entity';
 import { MailQueue } from './mail/entities/mail-queue.entity';
+import { Pack } from './packs/entities/pack.entity';
+import { UserSticker } from './packs/entities/user-sticker.entity';
 import { PointTransaction } from './points/entities/point-transaction.entity';
 import { Match } from './prode/entities/match.entity';
 import { ProdePick } from './prode/entities/prode-pick.entity';
@@ -37,6 +42,9 @@ import { User } from './users/entities/user.entity';
         MailQueue,
         Match,
         ProdePick,
+        Pack,
+        UserSticker,
+        TradeOffer,
       ],
       synchronize: process.env.NODE_ENV !== 'production',
       logging: process.env.NODE_ENV === 'development',
@@ -56,6 +64,8 @@ import { User } from './users/entities/user.entity';
     PointsModule,
     MailModule,
     ProdeModule,
+    PacksModule,
+    AlbumModule,
   ],
 })
 export class AppModule {}
