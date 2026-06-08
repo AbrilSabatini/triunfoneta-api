@@ -29,6 +29,7 @@ import { Roles } from '../common/decorators/roles.decorator';
 import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
 import { RolesGuard } from '../common/guards/roles.guard';
 import {
+  ChangePasswordDto,
   CreateStickerDto,
   QueryUsersDto,
   UpdateStickerDto,
@@ -179,7 +180,7 @@ export class UsersController {
     description:
       'Crea la figurita del usuario. **Solo puede ejecutarse una vez por cuenta.** ' +
       `Al crearse otorga los puntos configurados en STICKER_CREATION_POINTS (default: 50pts). ` +
-      'Si el usuario no quiere subir foto puede usar useAvatar=true.',
+      'Si el usuario no quiere subir foto puede usar useAvatar=true con un color HEX.',
   })
   @ApiResponse({
     status: 201,
@@ -258,6 +259,26 @@ export class UsersController {
     );
   }
 
+  @Post('users/me/change-password')
+  @UseGuards(JwtAuthGuard)
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiOperation({
+    summary: 'Cambiar contraseña',
+    description:
+      'Cambia la contraseña del usuario autenticado. ' +
+      'Requiere la contraseña actual para confirmar la identidad. ' +
+      'La nueva contraseña debe ser distinta a la actual y tener al menos 8 caracteres.',
+  })
+  @ApiResponse({ status: 204, description: 'Contraseña cambiada exitosamente' })
+  @ApiResponse({
+    status: 400,
+    description: 'Nueva contraseña igual a la actual',
+  })
+  @ApiResponse({ status: 401, description: 'Contraseña actual incorrecta' })
+  changePassword(@Request() req, @Body() dto: ChangePasswordDto) {
+    return this.usersService.changePassword(req.user.id, dto);
+  }
+
   // ─── Perfil público (para zona de intercambios) ───────────────────────────
 
   @Get('users/:id/profile')
@@ -296,10 +317,11 @@ export class UsersController {
 
   // ─── Admin ────────────────────────────────────────────────────────────────
 
-  @Get('users')
+  @Get('admin/users')
   @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.ADMIN)
   @ApiOperation({
-    summary: 'Listar usuarios con rol user',
+    summary: '[ADMIN] Listar usuarios',
     description:
       'Lista todos los usuarios con filtros opcionales. ' +
       'Permite buscar por nombre parcial, filtrar por área y paginar.',

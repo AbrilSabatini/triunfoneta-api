@@ -12,7 +12,6 @@ import {
   IsString,
   Max,
   Min,
-  MinLength,
   ValidateNested,
 } from 'class-validator';
 import { TriviaCategory } from '../entities/trivia-question.entity';
@@ -126,20 +125,4 @@ export class AnswerQuestionDto {
   @IsInt()
   @Type(() => Number)
   selectedOptionId: number;
-}
-
-// ─── Password change ──────────────────────────────────────────────────────────
-
-export class ChangePasswordDto {
-  @ApiProperty({ example: 'MiPasswordActual123' })
-  @IsString()
-  @IsNotEmpty({ message: 'La contraseña actual es requerida' })
-  currentPassword: string;
-
-  @ApiProperty({ example: 'NuevaPassword456!', minLength: 8 })
-  @IsString()
-  @MinLength(8, {
-    message: 'La nueva contraseña debe tener al menos 8 caracteres',
-  })
-  newPassword: string;
 }

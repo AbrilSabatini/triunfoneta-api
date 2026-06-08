@@ -157,3 +157,19 @@ export class QueryUsersDto {
   @IsOptional()
   limit?: number;
 }
+
+// ─── Password change ──────────────────────────────────────────────────────────
+
+export class ChangePasswordDto {
+  @ApiProperty({ example: 'MiPasswordActual123' })
+  @IsString()
+  @IsNotEmpty({ message: 'La contraseña actual es requerida' })
+  currentPassword: string;
+
+  @ApiProperty({ example: 'NuevaPassword456!', minLength: 8 })
+  @IsString()
+  @MinLength(8, {
+    message: 'La nueva contraseña debe tener al menos 8 caracteres',
+  })
+  newPassword: string;
+}

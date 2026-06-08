@@ -1,14 +1,19 @@
 import {
+  BadRequestException,
   ConflictException,
   ForbiddenException,
   Injectable,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ILike, Repository } from 'typeorm';
+import * as bcrypt from 'bcrypt';
+import { plainToInstance } from 'class-transformer';
+import { Repository } from 'typeorm';
 import { PointReason } from '../points/entities/point-transaction.entity';
 import { PointsService } from '../points/points.service';
 import {
+  ChangePasswordDto,
   CreateStickerDto,
   QueryUsersDto,
   UpdateStickerDto,
@@ -140,7 +145,7 @@ export class UsersService {
   // ─── Búsqueda pública de usuarios (para intercambios) ────────────────────
 
   async findPublicProfile(targetUserId: number): Promise<{
-    user: Partial<User>;
+    user: UserResponseDto;
     sticker: Sticker | null;
   }> {
     const user = await this.findById(targetUserId);
@@ -148,12 +153,9 @@ export class UsersService {
       where: { user: { id: targetUserId } },
     });
     return {
-      user: {
-        id: user.id,
-        fullName: user.fullName,
-        area: user.area,
-        avatarUrl: user.avatarUrl,
-      },
+      user: plainToInstance(UserResponseDto, user, {
+        excludeExtraneousValues: true,
+      }),
       sticker,
     };
   }
@@ -166,18 +168,23 @@ export class UsersService {
     const { search, areaId, page = 1, limit = 20 } = query;
     const skip = (page - 1) * limit;
 
-    const where: any = {};
-    if (areaId) where.areaId = areaId;
-    if (search) where.fullName = ILike(`%${search}%`);
-    where.role = UserRole.USER;
+    const qb = this.usersRepo
+      .createQueryBuilder('user')
+      .leftJoinAndSelect('user.area', 'area')
+      .where('user.role = :role', { role: UserRole.USER })
+      .orderBy('user.createdAt', 'DESC')
+      .skip(skip)
+      .take(limit);
 
-    const [data, total] = await this.usersRepo.findAndCount({
-      where,
-      order: { createdAt: 'DESC' },
-      skip,
-      take: limit,
+    if (areaId) qb.andWhere('user.areaId = :areaId', { areaId });
+    if (search)
+      qb.andWhere('user.fullName ILIKE :search', { search: `%${search}%` });
+
+    const [users, total] = await qb.getManyAndCount();
+
+    const data = plainToInstance(UserResponseDto, users, {
+      excludeExtraneousValues: true,
     });
-
     return { data, total };
   }
 
@@ -192,6 +199,33 @@ export class UsersService {
     const user = await this.findById(userId);
     Object.assign(user, dto);
     return this.usersRepo.save(user);
+  }
+
+  async changePassword(userId: number, dto: ChangePasswordDto): Promise<void> {
+    // Traer la contraseña (campo select:false)
+    const user = await this.usersRepo
+      .createQueryBuilder('user')
+      .addSelect('user.password')
+      .where('user.id = :id', { id: userId })
+      .getOne();
+
+    if (!user) throw new NotFoundException('Usuario no encontrado.');
+
+    const valid = await user.validatePassword(dto.currentPassword);
+    if (!valid) {
+      throw new UnauthorizedException('La contraseña actual es incorrecta.');
+    }
+
+    if (dto.currentPassword === dto.newPassword) {
+      throw new BadRequestException(
+        'La nueva contraseña no puede ser igual a la actual.',
+      );
+    }
+
+    // Hashear manualmente (no usar save() para evitar que @BeforeUpdate
+    // hashee el hash si otros campos cambian al mismo tiempo)
+    const hashed = await bcrypt.hash(dto.newPassword, 10);
+    await this.usersRepo.update(userId, { password: hashed });
   }
 
   async getStats(): Promise<{
