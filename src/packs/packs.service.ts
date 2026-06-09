@@ -8,7 +8,7 @@ import {
   PointTransaction,
 } from '../points/entities/point-transaction.entity';
 import { PointsService } from '../points/points.service';
-import { Sticker } from '../users/entities/sticker.entity';
+import { Sticker, StickerRarity } from '../users/entities/sticker.entity';
 import { User } from '../users/entities/user.entity';
 import { QueryCollectionDto, QueryPackHistoryDto } from './dto/packs.dto';
 import { Pack } from './entities/pack.entity';
@@ -300,50 +300,68 @@ export class PacksService {
   // ─── Helpers privados ─────────────────────────────────────────────────────
 
   /**
-   * Sortea N figuritas del pool total con distribución equitativa por área.
-   * Usa Fisher-Yates y limita a máx. 2 figuritas del mismo área por sobre
-   * para garantizar variedad.
+   * Sortea N figuritas con probabilidad ponderada por rareza.
+   *
+   * Probabilidades configurables por env:
+   *   PACK_LEGEND_CHANCE  (default: 0.05 → 5%  por slot)
+   *   PACK_RARE_CHANCE    (default: 0.15 → 15% por slot)
+   *   Resto → COMMON
+   *
+   * Algoritmo:
+   * 1. Separar stickers por rareza.
+   * 2. Por cada slot, tirar el dado y elegir del pool correspondiente.
+   * 3. Si el pool de esa rareza está vacío, usar COMMON como fallback.
+   * 4. Sin límite por área — la variedad surge de la aleatoriedad.
    */
   private async drawStickers(count: number): Promise<Sticker[]> {
     const all = await this.stickerRepo.find();
     if (all.length === 0) return [];
 
-    // Fisher-Yates shuffle
-    for (let i = all.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [all[i], all[j]] = [all[j], all[i]];
-    }
+    const legendChance = Number(this.config.get('PACK_LEGEND_CHANCE', 0.05));
 
-    console.log(
-      'Todos los stickers',
-      all.forEach((s) => s.id),
-    );
-    const MAX_PER_AREA = 2;
-    const areaCount = new Map<string, number>();
-    const drawn: Sticker[] = [];
+    const pools = {
+      [StickerRarity.LEGEND]: all.filter(
+        (s) => s.rarity === StickerRarity.LEGEND,
+      ),
+      [StickerRarity.COMMON]: all.filter(
+        (s) => s.rarity === StickerRarity.COMMON,
+      ),
+    };
 
-    // Primera pasada: respetar límite de área
-    for (const s of all) {
-      if (drawn.length >= count) break;
-      const area = s.area ?? 'general';
-      const current = areaCount.get(area) ?? 0;
-      if (current < MAX_PER_AREA) {
-        drawn.push(s);
-        areaCount.set(area, current + 1);
+    // Fisher-Yates en cada pool
+    const shuffle = (arr: Sticker[]) => {
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
       }
-    }
+      return arr;
+    };
+    Object.values(pools).forEach(shuffle);
 
-    console.log(
-      'Stickers filtrados',
-      drawn.forEach((d) => d.id),
-    );
+    const drawn: Sticker[] = [];
+    const usedIds = new Set<number>();
 
-    // Segunda pasada: completar sin restricción si el pool es pequeño
-    if (drawn.length < count) {
-      const drawnIds = new Set(drawn.map((s) => s.id));
-      for (const s of all) {
-        if (drawn.length >= count) break;
-        if (!drawnIds.has(s.id)) drawn.push(s);
+    const pickFrom = (rarity: string): Sticker | null => {
+      const pool = pools[rarity] ?? [];
+      const available = pool.filter((s) => !usedIds.has(s.id));
+      return available.length > 0 ? available[0] : null;
+    };
+
+    for (let i = 0; i < count; i++) {
+      const roll = Math.random();
+      let sticker: Sticker | null = null;
+
+      if (roll < legendChance) {
+        sticker =
+          pickFrom(StickerRarity.LEGEND) ?? pickFrom(StickerRarity.COMMON);
+      } else {
+        sticker =
+          pickFrom(StickerRarity.COMMON) ?? pickFrom(StickerRarity.LEGEND);
+      }
+
+      if (sticker) {
+        drawn.push(sticker);
+        usedIds.add(sticker.id);
       }
     }
 

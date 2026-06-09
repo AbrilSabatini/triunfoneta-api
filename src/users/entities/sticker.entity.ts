@@ -1,3 +1,4 @@
+import { ApiProperty } from '@nestjs/swagger';
 import {
   Column,
   CreateDateColumn,
@@ -9,6 +10,11 @@ import {
 } from 'typeorm';
 import { User } from './user.entity';
 
+export enum StickerRarity {
+  COMMON = 'common', // figurita normal
+  LEGEND = 'legend', // gerente — difícil de conseguir
+}
+
 @Entity('stickers')
 export class Sticker {
   @PrimaryGeneratedColumn()
@@ -17,6 +23,9 @@ export class Sticker {
   @OneToOne(() => User, { onDelete: 'CASCADE' })
   @JoinColumn()
   user: User;
+
+  @Column()
+  userId: number;
 
   // Nombre visible en la figurita (puede diferir del nombre real)
   @Column()
@@ -48,6 +57,14 @@ export class Sticker {
   // Número de figurita (asignado automáticamente al crearse)
   @Column({ unique: true, nullable: true })
   stickerNumber: number;
+
+  /**
+   * Rareza de la figurita. Se hereda de user.isLegend al crear el sticker.
+   * LEGEND = gerente, solo aparece en sobres con baja probabilidad.
+   */
+  @ApiProperty({ enum: StickerRarity, default: StickerRarity.COMMON })
+  @Column({ type: 'enum', enum: StickerRarity, default: StickerRarity.COMMON })
+  rarity: StickerRarity;
 
   @CreateDateColumn()
   createdAt: Date;

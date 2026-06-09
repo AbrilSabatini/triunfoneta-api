@@ -46,6 +46,50 @@ import { UsersService } from './users.service';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
+  // ─── Listado público (visible para todos los empleados) ─────────────────────
+
+  @Get('users')
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({
+    summary: 'Listar empleados (público)',
+    description:
+      'Lista todos los empleados activos con sus datos básicos y número de figurita. ' +
+      'Visible para cualquier usuario autenticado. ' +
+      'Útil para buscar compañeros en la zona de intercambios.',
+  })
+  @ApiQuery({
+    name: 'search',
+    required: false,
+    description: 'Buscar por nombre',
+  })
+  @ApiQuery({ name: 'page', required: false, type: Number })
+  @ApiQuery({ name: 'limit', required: false, type: Number })
+  @ApiResponse({
+    status: 200,
+    schema: {
+      example: {
+        data: [
+          {
+            id: 2,
+            fullName: 'Pablo García',
+            area: { id: 1, name: 'Comercial' },
+            avatarUrl: null,
+            stickerNumber: 4,
+            rarity: 'common',
+          },
+        ],
+        total: 87,
+      },
+    },
+  })
+  listPublicUsers(
+    @Query('search') search?: string,
+    @Query('page') page = 1,
+    @Query('limit') limit = 20,
+  ) {
+    return null;
+  }
+
   // ─── Perfil propio ────────────────────────────────────────────────────────
 
   @Get('users/me')

@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional, PartialType } from '@nestjs/swagger';
-import { Type } from 'class-transformer';
+import { Exclude, Expose, Type } from 'class-transformer';
 import {
   ArrayMaxSize,
   ArrayMinSize,
@@ -16,6 +16,69 @@ import {
   MinLength,
   ValidateNested,
 } from 'class-validator';
+
+// ─── DTOs de respuesta ────────────────────────────────────────────────────────
+
+/**
+ * Subconjunto del área que se expone en las respuestas de usuario.
+ * Oculta color, emoji, isActive y timestamps que no son relevantes para el cliente.
+ */
+export class AreaSummaryDto {
+  @ApiProperty({ example: 8 })
+  @Expose()
+  id: number;
+
+  @ApiProperty({ example: 'Legal' })
+  @Expose()
+  name: string;
+}
+
+@Exclude()
+export class UserResponseDto {
+  @ApiProperty({ example: 23 })
+  @Expose()
+  id: number;
+
+  @ApiProperty({ example: 'ana@triunfo.com' })
+  @Expose()
+  email: string;
+
+  @ApiProperty({ example: 'Ana García' })
+  @Expose()
+  fullName: string;
+
+  @ApiProperty({ type: () => AreaSummaryDto, nullable: true })
+  @Expose()
+  @Type(() => AreaSummaryDto)
+  area: AreaSummaryDto | null;
+
+  @ApiProperty({ example: null, nullable: true })
+  @Expose()
+  avatarUrl: string | null;
+
+  @ApiProperty({ example: 50 })
+  @Expose()
+  points: number;
+
+  @ApiProperty({ example: true })
+  @Expose()
+  isActive: boolean;
+}
+
+@Exclude()
+export class UserProfileDto extends UserResponseDto {
+  @ApiProperty({ example: false, description: 'Si ya creó su figurita' })
+  @Expose()
+  stickerCreated: boolean;
+
+  @ApiProperty({ example: 'user' })
+  @Expose()
+  role: string;
+
+  @ApiProperty()
+  @Expose()
+  createdAt: Date;
+}
 
 // ─── Auth DTOs ───────────────────────────────────────────────────────────────
 
@@ -34,8 +97,9 @@ export class RegisterDto {
   @IsNotEmpty()
   fullName: string;
 
-  @ApiProperty({ example: '3', description: 'ID del área (ver GET /areas)' })
-  @IsInt()
+  @ApiProperty({ example: 1, description: 'ID del área (ver GET /api/areas)' })
+  @IsInt({ message: 'areaId debe ser un número entero' })
+  @Type(() => Number)
   areaId: number;
 }
 
@@ -49,8 +113,9 @@ export class BulkRegisterItemDto {
   @IsNotEmpty()
   fullName: string;
 
-  @ApiProperty({ example: '3', description: 'ID del área (ver GET /areas)' })
-  @IsInt()
+  @ApiProperty({ example: 1, description: 'ID del área (ver GET /api/areas)' })
+  @IsInt({ message: 'areaId debe ser un número entero' })
+  @Type(() => Number)
   areaId: number;
 }
 
@@ -80,7 +145,7 @@ export class LoginDto {
   password: string;
 }
 
-// ─── User DTOs ───────────────────────────────────────────────────────────────
+// ─── User DTOs de entrada ─────────────────────────────────────────────────────
 
 export class UpdateUserDto {
   @ApiPropertyOptional({ example: 'Ana M. García' })
@@ -88,9 +153,10 @@ export class UpdateUserDto {
   @IsString()
   fullName?: string;
 
-  @ApiPropertyOptional({ example: '2' })
+  @ApiPropertyOptional({ example: 1 })
   @IsOptional()
   @IsInt()
+  @Type(() => Number)
   areaId?: number;
 }
 
@@ -147,14 +213,18 @@ export class QueryUsersDto {
 
   @ApiPropertyOptional({ description: 'Filtrar por área ID' })
   @IsOptional()
+  @IsInt()
+  @Type(() => Number)
   areaId?: number;
 
   @ApiPropertyOptional({ default: 1 })
   @IsOptional()
+  @Type(() => Number)
   page?: number;
 
   @ApiPropertyOptional({ default: 20 })
   @IsOptional()
+  @Type(() => Number)
   limit?: number;
 }
 

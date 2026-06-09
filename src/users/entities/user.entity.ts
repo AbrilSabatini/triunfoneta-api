@@ -40,6 +40,9 @@ export class User {
   @JoinColumn({ name: 'areaId' })
   area: Area;
 
+  @Column({ nullable: true })
+  areaId: number;
+
   @ApiProperty({ enum: UserRole, default: UserRole.USER })
   @Column({ type: 'enum', enum: UserRole, default: UserRole.USER })
   role: UserRole;
@@ -59,6 +62,17 @@ export class User {
   @ApiProperty({ default: false })
   @Column({ default: false })
   stickerCreated: boolean;
+
+  /**
+   * Si true, este empleado es un gerente — su figurita es de tipo LEGEND
+   * (difícil de conseguir en sobres). Solo el admin puede setearlo.
+   */
+  @ApiProperty({
+    default: false,
+    description: 'Gerente — su figurita es legendaria',
+  })
+  @Column({ default: false })
+  isLegend: boolean;
 
   @ApiProperty()
   @CreateDateColumn()

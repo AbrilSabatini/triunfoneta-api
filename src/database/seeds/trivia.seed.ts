@@ -9,7 +9,7 @@ const QUESTIONS = [
   // ─── Mundial ──────────────────────────────────────────────────────────────
   {
     question: '¿En qué año Argentina ganó su primer Mundial?',
-    category: TriviaCategory.MUNDIAL,
+    category: TriviaCategory.FUTBOL,
     points: 5,
     options: [
       { text: '1930', isCorrect: false, order: 0 },
@@ -20,7 +20,7 @@ const QUESTIONS = [
   },
   {
     question: '¿Quién fue el máximo goleador del Mundial 2022?',
-    category: TriviaCategory.MUNDIAL,
+    category: TriviaCategory.FUTBOL,
     points: 10,
     options: [
       { text: 'Lionel Messi', isCorrect: false, order: 0 },
@@ -31,7 +31,7 @@ const QUESTIONS = [
   },
   {
     question: '¿Cuántos goles necesitó Argentina para ganar el Mundial 2022?',
-    category: TriviaCategory.MUNDIAL,
+    category: TriviaCategory.FUTBOL,
     points: 20,
     options: [
       { text: '15', isCorrect: false, order: 0 },
@@ -42,7 +42,7 @@ const QUESTIONS = [
   },
   {
     question: '¿En qué ciudad se jugó la final del Mundial 2022?',
-    category: TriviaCategory.MUNDIAL,
+    category: TriviaCategory.FUTBOL,
     points: 5,
     options: [
       { text: 'Dubái', isCorrect: false, order: 0 },
@@ -51,10 +51,10 @@ const QUESTIONS = [
       { text: 'Al Rayyan', isCorrect: false, order: 3 },
     ],
   },
-  // ─── Historia del fútbol ──────────────────────────────────────────────────
+  // ─── FUTBOL del fútbol ──────────────────────────────────────────────────
   {
-    question: '¿Qué país ganó el primer Mundial de la historia?',
-    category: TriviaCategory.HISTORIA,
+    question: '¿Qué país ganó el primer Mundial de la FUTBOL?',
+    category: TriviaCategory.FUTBOL,
     points: 10,
     options: [
       { text: 'Brasil', isCorrect: false, order: 0 },
@@ -65,7 +65,7 @@ const QUESTIONS = [
   },
   {
     question: '¿Cuántos Mundiales ganó Brasil en total?',
-    category: TriviaCategory.HISTORIA,
+    category: TriviaCategory.FUTBOL,
     points: 5,
     options: [
       { text: '4', isCorrect: false, order: 0 },
@@ -75,8 +75,8 @@ const QUESTIONS = [
     ],
   },
   {
-    question: '¿Quién es el máximo goleador en la historia de los Mundiales?',
-    category: TriviaCategory.HISTORIA,
+    question: '¿Quién es el máximo goleador en la FUTBOL de los Mundiales?',
+    category: TriviaCategory.FUTBOL,
     points: 20,
     options: [
       { text: 'Pelé', isCorrect: false, order: 0 },

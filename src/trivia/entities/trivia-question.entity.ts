@@ -8,12 +8,15 @@ import {
 } from 'typeorm';
 
 export enum TriviaCategory {
-  MUNDIAL = 'Mundial',
-  HISTORIA = 'Historia del fútbol',
+  MUNDIAL = 'Mundialistas',
+  FUTBOL = 'Fútbol', // películas y leyendas del fútbol
   TRIUNFO = 'Triunfo Seguros',
+  GERENTES = 'Gerentes de Triunfo',
+  SEGUROS = 'Rubro: Seguros',
+  ESUELDOS = 'E-Sueldos',
+  CAMISETAS = 'Camisetas de fútbol',
+  PRODUCTOS = 'Productos de Triunfo Seguros',
   CULTURA_GENERAL = 'Cultura general',
-  DEPORTE = 'Deporte',
-  ENTRETENIMIENTO = 'Entretenimiento',
 }
 
 @Entity('trivia_questions')

@@ -19,8 +19,9 @@ import {
   UpdateStickerDto,
   UpdateUserAdminDto,
   UpdateUserDto,
+  UserResponseDto,
 } from './dto/users.dto';
-import { Sticker } from './entities/sticker.entity';
+import { Sticker, StickerRarity } from './entities/sticker.entity';
 import { User, UserRole } from './entities/user.entity';
 
 const STICKER_CREATION_POINTS = Number(
@@ -95,6 +96,7 @@ export class UsersService {
       ...dto,
       user,
       area: user.area.name,
+      rarity: user.isLegend ? StickerRarity.LEGEND : StickerRarity.COMMON,
       stickerNumber,
     });
 
@@ -164,7 +166,7 @@ export class UsersService {
 
   async findAll(
     query: QueryUsersDto,
-  ): Promise<{ data: User[]; total: number }> {
+  ): Promise<{ data: UserResponseDto[]; total: number }> {
     const { search, areaId, page = 1, limit = 20 } = query;
     const skip = (page - 1) * limit;
 
