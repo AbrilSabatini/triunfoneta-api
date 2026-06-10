@@ -1,6 +1,9 @@
 import { ApiProperty, ApiPropertyOptional, PartialType } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import {
+  ArrayMaxSize,
+  ArrayMinSize,
+  IsArray,
   IsBoolean,
   IsDateString,
   IsEnum,
@@ -10,6 +13,7 @@ import {
   IsString,
   Max,
   Min,
+  ValidateNested,
 } from 'class-validator';
 import { MatchGroup, MatchStage } from '../entities/match.entity';
 
@@ -36,16 +40,6 @@ export class CreateMatchDto {
   @IsDateString()
   matchDate: string;
 
-  @ApiPropertyOptional({
-    example: '2026-06-10T23:59:00-03:00',
-    description:
-      'Cierre de predicciones. Si no se envía, se calcula automáticamente ' +
-      'como 24 horas antes del partido.',
-  })
-  @IsOptional()
-  @IsDateString()
-  picksCloseAt?: string;
-
   @ApiProperty({ enum: MatchStage, example: MatchStage.GROUP })
   @IsEnum(MatchStage)
   stage: MatchStage;
@@ -61,6 +55,20 @@ export class CreateMatchDto {
 }
 
 export class UpdateMatchDto extends PartialType(CreateMatchDto) {}
+
+export class BulkCreateMatchesDto {
+  @ApiProperty({
+    type: [CreateMatchDto],
+    description:
+      'Máximo 64 partidos por solicitud (fixture completo de un Mundial).',
+  })
+  @IsArray()
+  @ArrayMinSize(1, { message: 'Debe incluir al menos un partido' })
+  @ArrayMaxSize(64, { message: 'Máximo 64 partidos por solicitud' })
+  @ValidateNested({ each: true })
+  @Type(() => CreateMatchDto)
+  matches: CreateMatchDto[];
+}
 
 export class SetResultDto {
   @ApiProperty({ example: 2, description: 'Goles del equipo local' })

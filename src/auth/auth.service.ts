@@ -4,6 +4,7 @@ import {
   Logger,
   UnauthorizedException,
 } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
@@ -51,6 +52,7 @@ export class AuthService {
     private usersService: UsersService,
     private jwtService: JwtService,
     private mailService: MailService,
+    private config: ConfigService,
   ) {}
 
   // ─── Registro individual ──────────────────────────────────────────────────
@@ -67,12 +69,19 @@ export class AuthService {
       throw new ConflictException('Ya existe una cuenta con ese email');
     }
 
+    // Los usuarios leyenda (gerentes) usan la contraseña predefinida por env
+    const isLegend = dto.isLegend ?? false;
+    const password = isLegend
+      ? (this.config.get<string>('LEGEND_PASSWORD') ?? 'Leyenda2026!')
+      : dto.password;
+
     const user = this.usersRepo.create({
       email: dto.email,
-      password: dto.password, // se hashea en @beforeInsert del entity
+      password,
       fullName: dto.fullName,
-      area: await this.areasService.findOne(dto.areaId),
+      areaId: dto.areaId,
       role: UserRole.USER,
+      isLegend,
     });
     const saved = await this.usersRepo.save(user);
 
@@ -89,6 +98,18 @@ export class AuthService {
           `[AUTH] Error encolando bienvenida para ${saved.email}: ${err.message}`,
         ),
       );
+
+    // Si el usuario es leyenda: crear su sticker automáticamente
+    if (saved.isLegend) {
+      await this.usersService.createSticker(
+        saved.id,
+        {
+          nickname: saved.fullName.split(' ')[0],
+          useAvatar: true,
+        },
+        true, // internal = true → omite el check de stickerCreated
+      );
+    }
 
     const { password: _, ...safeUser } = saved as any;
     return { accessToken: this.signToken(saved), user: safeUser };
@@ -152,57 +173,86 @@ export class AuthService {
     // Si se generan en pasos separados (como ocurría antes), hay riesgo de
     // que el hash no corresponda al plain que se envía por email.
     //
+    const legendPassword =
+      this.config.get<string>('LEGEND_PASSWORD') ?? 'Leyenda2026!';
+
+    // 3 ── Generar contraseña por usuario ──────────────────────────────────
+    //
+    // Leyenda:  contraseña fija desde env (LEGEND_PASSWORD) — sin email
+    // Normal:   contraseña temporal aleatoria — con email
+    //
     const prepared = await Promise.all(
       toCreate.map(async (u) => {
-        const plainPassword = generateTemporaryPassword();
+        const isLegend = (u as any).isLegend ?? false;
+        const plainPassword = isLegend
+          ? legendPassword
+          : generateTemporaryPassword();
         return {
           user: u,
+          isLegend,
           plainPassword,
           hashedPassword: await bcrypt.hash(plainPassword, 10),
+          sendEmail: !isLegend,
         };
       }),
     );
 
     // 4 ── INSERT directo, saltando @BeforeInsert ──────────────────────────
-    //
-    // usersRepo.save() dispara @BeforeInsert → bcrypt.hash() nuevamente,
-    // lo que hashearía el hash ya generado y rompería el login del usuario.
-    // QueryBuilder hace un INSERT raw que omite el lifecycle hook.
-    //
     await this.usersRepo
       .createQueryBuilder()
       .insert()
       .into(User)
       .values(
-        prepared.map(({ user: u, hashedPassword }) => ({
+        prepared.map(({ user: u, hashedPassword, isLegend }) => ({
           email: u.email,
           fullName: u.fullName,
           areaId: u.areaId,
           password: hashedPassword,
           role: UserRole.USER,
           isActive: true,
+          isLegend,
           stickerCreated: false,
           points: 0,
         })),
       )
-      .orIgnore() // safety net contra race conditions
+      .orIgnore()
       .execute();
 
-    // Recuperar los registros recién creados para tener sus IDs completos
+    // Recuperar registros recién creados
     const created = await this.usersRepo.find({
       where: { email: In(prepared.map((p) => p.user.email)) },
     });
     this.logger.log(`[BULK] ${created.length} usuarios creados.`);
 
-    // 5 ── Encolar emails con la contraseña en texto plano ─────────────────
-    const { sent: emailsSent, queued: emailsQueued } =
-      await this.mailService.enqueueWelcomeBatch(
-        prepared.map(({ user: u, plainPassword }) => ({
+    // 5a ── Auto-crear sticker para leyendas ───────────────────────────────
+    const legends = created.filter((u) => u.isLegend);
+    for (const legend of legends) {
+      await this.usersService.createSticker(
+        legend.id,
+        { nickname: legend.fullName, useAvatar: true },
+        true,
+      );
+      this.logger.log(
+        `[BULK] Sticker auto-creado para leyenda userId=${legend.id}`,
+      );
+    }
+
+    // 5b ── Encolar emails solo para no-leyendas ───────────────────────────
+    const emailTargets = prepared.filter((p) => p.sendEmail);
+    let emailsSent = 0,
+      emailsQueued = 0;
+
+    if (emailTargets.length > 0) {
+      const result = await this.mailService.enqueueWelcomeBatch(
+        emailTargets.map(({ user: u, plainPassword }) => ({
           fullName: u.fullName,
           email: u.email,
           temporaryPassword: plainPassword,
         })),
       );
+      emailsSent = result.sent;
+      emailsQueued = result.queued;
+    }
 
     return {
       created: created.length,

@@ -149,6 +149,7 @@ export class MailService {
       const html = this.buildHtml(entry);
       await this.transporter.sendMail({
         from: `"${process.env.MAIL_FROM_NAME ?? 'Triunfoneta'}" <${process.env.MAIL_FROM_ADDRESS}>`,
+        replyTo: 'no-reply@triunfoneta.com',
         to: entry.toEmail,
         subject: this.buildSubject(entry),
         html,

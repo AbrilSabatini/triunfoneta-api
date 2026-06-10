@@ -101,6 +101,14 @@ export class RegisterDto {
   @IsInt({ message: 'areaId debe ser un número entero' })
   @Type(() => Number)
   areaId: number;
+
+  @ApiProperty({
+    example: false,
+    description: 'Si el usuario es gerente (figurita legendaria)',
+  })
+  @IsBoolean()
+  @IsOptional()
+  isLegend: boolean = false;
 }
 
 export class BulkRegisterItemDto {
@@ -117,6 +125,14 @@ export class BulkRegisterItemDto {
   @IsInt({ message: 'areaId debe ser un número entero' })
   @Type(() => Number)
   areaId: number;
+
+  @ApiProperty({
+    example: false,
+    description: 'Si el usuario es gerente (figurita legendaria)',
+  })
+  @IsBoolean()
+  @IsOptional()
+  isLegend: boolean = false;
 }
 
 export class BulkRegisterDto {

@@ -46,50 +46,6 @@ import { UsersService } from './users.service';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  // ─── Listado público (visible para todos los empleados) ─────────────────────
-
-  @Get('users')
-  @UseGuards(JwtAuthGuard)
-  @ApiOperation({
-    summary: 'Listar empleados (público)',
-    description:
-      'Lista todos los empleados activos con sus datos básicos y número de figurita. ' +
-      'Visible para cualquier usuario autenticado. ' +
-      'Útil para buscar compañeros en la zona de intercambios.',
-  })
-  @ApiQuery({
-    name: 'search',
-    required: false,
-    description: 'Buscar por nombre',
-  })
-  @ApiQuery({ name: 'page', required: false, type: Number })
-  @ApiQuery({ name: 'limit', required: false, type: Number })
-  @ApiResponse({
-    status: 200,
-    schema: {
-      example: {
-        data: [
-          {
-            id: 2,
-            fullName: 'Pablo García',
-            area: { id: 1, name: 'Comercial' },
-            avatarUrl: null,
-            stickerNumber: 4,
-            rarity: 'common',
-          },
-        ],
-        total: 87,
-      },
-    },
-  })
-  listPublicUsers(
-    @Query('search') search?: string,
-    @Query('page') page = 1,
-    @Query('limit') limit = 20,
-  ) {
-    return null;
-  }
-
   // ─── Perfil propio ────────────────────────────────────────────────────────
 
   @Get('users/me')
@@ -461,5 +417,51 @@ export class UsersController {
     @Request() req,
   ) {
     return this.usersService.updateByAdmin(id, dto, req.user);
+  }
+
+  @Post('admin/users/:userId/sticker/photo')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.ADMIN)
+  @UseInterceptors(FileInterceptor('file', multerStickerConfig))
+  @ApiOperation({
+    summary: '[ADMIN] Subir foto de figurita de un usuario',
+    description:
+      'Permite al admin subir o reemplazar la foto de la figurita de cualquier usuario. ' +
+      'Especialmente útil para las figuritas **leyenda** (gerentes), ' +
+      'donde RRHH sube la foto oficial del gerente. ' +
+      'Acepta JPG, PNG o WebP, máx. 5MB.',
+  })
+  @ApiParam({
+    name: 'userId',
+    type: Number,
+    description: 'ID del usuario dueño del sticker',
+  })
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        file: {
+          type: 'string',
+          format: 'binary',
+          description: 'Imagen JPG, PNG o WebP (máx. 5MB)',
+        },
+      },
+    },
+  })
+  @ApiResponse({
+    status: 201,
+    description: 'Foto subida y figurita actualizada',
+  })
+  @ApiResponse({ status: 404, description: 'Usuario sin figurita todavía' })
+  async uploadStickerPhotoByAdmin(
+    @Param('userId', ParseIntPipe) userId: number,
+    @UploadedFile() file: Express.Multer.File,
+    @Request() req,
+  ) {
+    return this.usersService.uploadStickerPhotoByAdmin(
+      userId,
+      `/uploads/stickers/${file.filename}`,
+    );
   }
 }

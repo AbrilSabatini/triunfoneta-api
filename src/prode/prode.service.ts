@@ -13,6 +13,7 @@ import { PointReason } from '../points/entities/point-transaction.entity';
 import { PointsService } from '../points/points.service';
 import { User } from '../users/entities/user.entity';
 import {
+  BulkCreateMatchesDto,
   CreateMatchDto,
   QueryMatchesDto,
   QueryPicksDto,
@@ -20,7 +21,7 @@ import {
   UpdateMatchDto,
   UpsertPickDto,
 } from './dto/prode.dto';
-import { Match } from './entities/match.entity';
+import { Match, MatchGroup } from './entities/match.entity';
 import { ProdePick } from './entities/prode-pick.entity';
 
 @Injectable()
@@ -146,11 +147,76 @@ export class ProdeService {
 
   // ─── Admin: crear / editar partidos ──────────────────────────────────────
 
+  /**
+   * Carga el fixture completo en una sola operación.
+   * Todos se crean en una transacción: si falla uno, no se guarda ninguno.
+   * Los partidos duplicados (mismo homeTeam+awayTeam+matchDate) se omiten.
+   */
+  async bulkCreateMatches(dto: BulkCreateMatchesDto): Promise<{
+    created: number;
+    skipped: number;
+    matches: Array<{
+      id: number;
+      homeTeam: string;
+      awayTeam: string;
+      matchDate: Date;
+    }>;
+  }> {
+    return this.dataSource.transaction(async (manager) => {
+      const created: Match[] = [];
+      let skipped = 0;
+
+      for (const m of dto.matches) {
+        const matchDate = new Date(m.matchDate);
+        const picksClose = new Date(matchDate.getTime() - 1 * 60 * 1000); // -24h default
+
+        if (picksClose >= matchDate) {
+          throw new BadRequestException(
+            `Partido ${m.homeTeam} vs ${m.awayTeam}: picksCloseAt debe ser anterior al partido.`,
+          );
+        }
+
+        // Omitir duplicados
+        const existing = await manager.findOne(Match, {
+          where: { homeTeam: m.homeTeam, awayTeam: m.awayTeam, matchDate },
+        });
+        if (existing) {
+          skipped++;
+          continue;
+        }
+
+        const match = manager.create(Match, {
+          homeTeam: m.homeTeam,
+          awayTeam: m.awayTeam,
+          matchDate,
+          picksCloseAt: picksClose,
+          stage: m.stage,
+          group: m.group ?? MatchGroup.NONE,
+        });
+        created.push(await manager.save(Match, match));
+      }
+
+      this.logger.log(
+        `[PRODE] Bulk: ${created.length} partidos creados, ${skipped} omitidos.`,
+      );
+
+      return {
+        created: created.length,
+        skipped,
+        matches: created.map((m) => ({
+          id: m.id,
+          homeTeam: m.homeTeam,
+          awayTeam: m.awayTeam,
+          matchDate: m.matchDate,
+          picksCloseAt: m.picksCloseAt,
+        })),
+      };
+    });
+  }
+
   async createMatch(dto: CreateMatchDto): Promise<Match> {
     const matchDate = new Date(dto.matchDate);
-    const picksClose = dto.picksCloseAt
-      ? new Date(dto.picksCloseAt)
-      : new Date(matchDate.getTime() - 24 * 60 * 60 * 1000); // 24hs antes por default
+    const picksClose = new Date(matchDate.getTime() - 1 * 60 * 1000); // -24h default
 
     if (picksClose >= matchDate) {
       throw new BadRequestException(
@@ -178,9 +244,6 @@ export class ProdeService {
 
     if (dto.matchDate) {
       match.matchDate = new Date(dto.matchDate);
-    }
-    if (dto.picksCloseAt) {
-      match.picksCloseAt = new Date(dto.picksCloseAt);
     }
 
     Object.assign(match, {

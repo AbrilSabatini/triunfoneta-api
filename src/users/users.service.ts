@@ -76,7 +76,11 @@ export class UsersService {
 
   // ─── Figurita propia ──────────────────────────────────────────────────────
 
-  async createSticker(userId: number, dto: CreateStickerDto): Promise<Sticker> {
+  async createSticker(
+    userId: number,
+    dto: CreateStickerDto,
+    internal = false,
+  ): Promise<Sticker> {
     const user = await this.findById(userId);
 
     if (user.stickerCreated) {
@@ -95,9 +99,9 @@ export class UsersService {
     const sticker = this.stickersRepo.create({
       ...dto,
       user,
-      area: user.area.name,
-      rarity: user.isLegend ? StickerRarity.LEGEND : StickerRarity.COMMON,
+      area: user.area?.name ?? (user.area as any),
       stickerNumber,
+      rarity: user.isLegend ? StickerRarity.LEGEND : StickerRarity.COMMON,
     });
 
     const saved = await this.stickersRepo.save(sticker);
@@ -201,6 +205,27 @@ export class UsersService {
     const user = await this.findById(userId);
     Object.assign(user, dto);
     return this.usersRepo.save(user);
+  }
+
+  /**
+   * [ADMIN] Sube o reemplaza la foto de figurita de cualquier usuario.
+   * Pensado para las figuritas leyenda donde RRHH/admin sube la foto del gerente.
+   */
+  async uploadStickerPhotoByAdmin(
+    targetUserId: number,
+    photoUrl: string,
+  ): Promise<Sticker> {
+    const sticker = await this.stickersRepo.findOne({
+      where: { userId: targetUserId },
+    });
+    if (!sticker) {
+      throw new NotFoundException(
+        `El usuario #${targetUserId} todavía no tiene figurita.`,
+      );
+    }
+    sticker.photoUrl = photoUrl;
+    sticker.useAvatar = false;
+    return this.stickersRepo.save(sticker);
   }
 
   async changePassword(userId: number, dto: ChangePasswordDto): Promise<void> {

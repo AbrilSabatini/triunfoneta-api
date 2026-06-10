@@ -25,9 +25,7 @@ async function bootstrap() {
 
   // ─── Swagger ───────────────────────────────────────────────────────────────
   // Solo se expone en entornos no-productivos O si SWAGGER_ENABLED=true.
-  const swaggerEnabled =
-    process.env.NODE_ENV !== 'production' ||
-    process.env.SWAGGER_ENABLED === 'true';
+  const swaggerEnabled = process.env.SWAGGER_ENABLED === 'true';
 
   if (swaggerEnabled) {
     const config = new DocumentBuilder()
@@ -44,6 +42,33 @@ async function bootstrap() {
       .build();
 
     const document = SwaggerModule.createDocument(app, config);
+
+    // ── Protección en swagger ──────────────────────────────────
+
+    if (process.env.NODE_ENV == 'production') {
+      const swaggerUser = process.env.SWAGGER_USER ?? 'admin';
+      const swaggerPass = process.env.SWAGGER_PASS ?? 'triunfo2025';
+
+      const basicAuthMiddleware = (req, res, next) => {
+        const auth = req.headers['authorization'];
+        if (auth) {
+          const [scheme, encoded] = auth.split(' ');
+          if (scheme === 'Basic' && encoded) {
+            const [user, pass] = Buffer.from(encoded, 'base64')
+              .toString()
+              .split(':');
+            if (user === swaggerUser && pass === swaggerPass) {
+              return next();
+            }
+          }
+        }
+        res.setHeader('WWW-Authenticate', 'Basic realm="Triunfoneta Docs"');
+        res.status(401).send('Acceso no autorizado a la documentación.');
+      };
+
+      app.use('/api/docs', basicAuthMiddleware);
+      app.use('/api/docs-json', basicAuthMiddleware);
+    }
 
     SwaggerModule.setup('api/docs', app, document, {
       swaggerOptions: {

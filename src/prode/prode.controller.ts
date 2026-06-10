@@ -25,6 +25,7 @@ import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
 import { RolesGuard } from '../common/guards/roles.guard';
 import { UserRole } from '../users/entities/user.entity';
 import {
+  BulkCreateMatchesDto,
   CreateMatchDto,
   QueryMatchesDto,
   QueryPicksDto,
@@ -243,6 +244,45 @@ export class ProdeController {
   })
   createMatch(@Body() dto: CreateMatchDto) {
     return this.prodeService.createMatch(dto);
+  }
+
+  @Post('admin/matches/bulk')
+  @UseGuards(RolesGuard)
+  @Roles(UserRole.ADMIN)
+  @HttpCode(HttpStatus.CREATED)
+  @ApiOperation({
+    summary: '[ADMIN] Cargar fixture completo en bulk',
+    description:
+      'Crea hasta **64 partidos** en una sola transacción — suficiente para el fixture completo de un Mundial. ' +
+      'Todos los partidos se validan antes de guardar. Si alguno falla (ej: `picksCloseAt` posterior al partido), ' +
+      '**ninguno** se guarda.' +
+      'Los partidos duplicados (mismo `homeTeam + awayTeam + matchDate`) se omiten sin error. ' +
+      'Si no se envía `picksCloseAt`, se calcula automáticamente como **2 horas antes** del partido.',
+  })
+  @ApiResponse({
+    status: 201,
+    description: 'Fixture cargado',
+    schema: {
+      example: {
+        created: 12,
+        skipped: 2,
+        matches: [
+          {
+            id: 1,
+            homeTeam: 'Argentina',
+            awayTeam: 'Arabia Saudita',
+            matchDate: '2026-06-13T15:00:00.000Z',
+          },
+        ],
+      },
+    },
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Error en algún partido — no se guardó ninguno',
+  })
+  bulkCreateMatches(@Body() dto: BulkCreateMatchesDto) {
+    return this.prodeService.bulkCreateMatches(dto);
   }
 
   @Patch('admin/matches/:id')
