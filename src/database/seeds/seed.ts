@@ -10,9 +10,9 @@ import { Config } from '../../configs/entities/config.entity';
 import { Match } from '../../prode/entities/match.entity';
 import { TriviaOption } from '../../trivia/entities/trivia-option.entity';
 import { TriviaQuestion } from '../../trivia/entities/trivia-question.entity';
-import { seedMatches } from '../matches.seed';
 import { seedAreas } from './areas.seed';
 import { seedConfigs } from './configs.seed';
+import { seedMatches } from './matches.seed';
 import { seedTrivia } from './trivia.seed';
 import { seedUsers } from './users.seed';
 

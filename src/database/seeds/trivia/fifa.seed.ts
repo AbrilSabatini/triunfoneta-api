@@ -4,7 +4,7 @@ export const FIFA = [
   {
     question: '¿Qué significan las siglas FIFA?',
     category: TriviaCategory.FIFA,
-    points: 10,
+    points: 35,
     options: [
       {
         text: 'Federación Internacional de Fútbol Asociación',
@@ -31,7 +31,7 @@ export const FIFA = [
   {
     question: '¿En qué año fue fundada la FIFA?',
     category: TriviaCategory.FIFA,
-    points: 10,
+    points: 35,
     options: [
       { text: '1904', isCorrect: true, order: 0 },
       { text: '1910', isCorrect: false, order: 1 },
@@ -42,7 +42,7 @@ export const FIFA = [
   {
     question: '¿Dónde se encuentra la sede central de FIFA?',
     category: TriviaCategory.FIFA,
-    points: 10,
+    points: 35,
     options: [
       { text: 'París', isCorrect: false, order: 0 },
       { text: 'Londres', isCorrect: false, order: 1 },
@@ -53,7 +53,7 @@ export const FIFA = [
   {
     question: '¿Cuántas federaciones nacionales integran actualmente la FIFA?',
     category: TriviaCategory.FIFA,
-    points: 10,
+    points: 35,
     options: [
       { text: '180', isCorrect: false, order: 0 },
       { text: '195', isCorrect: false, order: 1 },
@@ -64,7 +64,7 @@ export const FIFA = [
   {
     question: '¿Qué torneo organiza la FIFA cada cuatro años?',
     category: TriviaCategory.FIFA,
-    points: 10,
+    points: 35,
     options: [
       { text: 'Copa Libertadores', isCorrect: false, order: 0 },
       { text: 'Champions League', isCorrect: false, order: 1 },

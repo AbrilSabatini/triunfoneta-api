@@ -4,7 +4,7 @@ export const GERENTES = [
   {
     question: '¿Quién es el Gerente General?',
     category: TriviaCategory.GERENTES,
-    points: 15,
+    points: 20,
     options: [
       { text: 'Carlos Pierrini', isCorrect: false, order: 0 },
       { text: 'Sebastián Pierrini', isCorrect: true, order: 1 },
@@ -15,7 +15,7 @@ export const GERENTES = [
   {
     question: '¿Quién es el Gerente de RRHH?',
     category: TriviaCategory.GERENTES,
-    points: 15,
+    points: 20,
     options: [
       { text: 'Mariana Ristagno', isCorrect: false, order: 0 },
       { text: 'Pablo Tablón', isCorrect: true, order: 1 },
@@ -26,7 +26,7 @@ export const GERENTES = [
   {
     question: '¿Quién lidera el área Comercial?',
     category: TriviaCategory.GERENTES,
-    points: 15,
+    points: 20,
     options: [
       { text: 'Lucas Ferrante', isCorrect: false, order: 0 },
       { text: 'Francisco Ranieri', isCorrect: true, order: 1 },
@@ -37,7 +37,7 @@ export const GERENTES = [
   {
     question: '¿Quién es la Gerente de Siniestros?',
     category: TriviaCategory.GERENTES,
-    points: 15,
+    points: 20,
     options: [
       { text: 'Soledad Nieto', isCorrect: true, order: 0 },
       { text: 'Inés Veloce', isCorrect: false, order: 1 },
@@ -48,7 +48,7 @@ export const GERENTES = [
   {
     question: '¿Quién ocupa la Subgerencia General de Operaciones & IT?',
     category: TriviaCategory.GERENTES,
-    points: 15,
+    points: 20,
     options: [
       { text: 'Elio Adrover', isCorrect: false, order: 0 },
       { text: 'Mónica Magni', isCorrect: true, order: 1 },

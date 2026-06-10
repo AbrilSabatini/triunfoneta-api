@@ -4,18 +4,18 @@ import { Config, ConfigType } from '../../configs/entities/config.entity';
 const CONFIGS_DATA = [
   {
     type: ConfigType.STICKER_CREATION_POINTS,
-    value: 50,
+    value: 500,
     description: 'Puntos otorgados al usuario por crear una figurita',
   },
   {
     type: ConfigType.PRODE_EXACT_POINTS,
-    value: 10,
+    value: 100,
     description:
       'Puntos otorgados por acertar el resultado exacto de un partido',
   },
   {
     type: ConfigType.PRODE_WINNER_POINTS,
-    value: 5,
+    value: 70,
     description: 'Puntos otorgados por acertar el ganador o empate del partido',
   },
   {
@@ -25,7 +25,7 @@ const CONFIGS_DATA = [
   },
   {
     type: ConfigType.PACK_COST_POINTS,
-    value: 100,
+    value: 150,
     description:
       'Cantidad de puntos necesarios para comprar un paquete de figuritas',
   },
@@ -36,9 +36,9 @@ const CONFIGS_DATA = [
   },
   {
     type: ConfigType.PACK_LEGEND_CHANCE,
-    value: 0.2,
+    value: 0.1,
     description:
-      'Probabilidad de obtener una figurita legendaria en un paquete (20%)',
+      'Probabilidad de obtener una figurita legendaria en un paquete (10%)',
   },
 ];
 

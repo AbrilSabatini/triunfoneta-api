@@ -4,7 +4,7 @@ export const PRODUCTOS = [
   {
     question: '¿Cuál es la cobertura principal del seguro agrícola?',
     category: TriviaCategory.PRODUCTOS,
-    points: 15,
+    points: 25,
     options: [
       { text: 'Heladas', isCorrect: false, order: 0 },
       { text: 'Incendio', isCorrect: false, order: 1 },
@@ -16,7 +16,7 @@ export const PRODUCTOS = [
     question:
       '¿Qué fenómeno cubre el seguro agrícola cuando daña directamente los cultivos?',
     category: TriviaCategory.PRODUCTOS,
-    points: 15,
+    points: 25,
     options: [
       { text: 'Inundación', isCorrect: false, order: 0 },
       { text: 'Granizo', isCorrect: true, order: 1 },
@@ -28,7 +28,7 @@ export const PRODUCTOS = [
     question:
       '¿Cuál de estas coberturas adicionales se ofrece en un seguro agrícola?',
     category: TriviaCategory.PRODUCTOS,
-    points: 15,
+    points: 25,
     options: [
       { text: 'Robo', isCorrect: false, order: 0 },
       { text: 'Heladas', isCorrect: true, order: 1 },
@@ -39,7 +39,7 @@ export const PRODUCTOS = [
   {
     question: '¿Qué cultivo está cubierto por el seguro agrícola?',
     category: TriviaCategory.PRODUCTOS,
-    points: 15,
+    points: 25,
     options: [
       { text: 'Soja', isCorrect: true, order: 0 },
       { text: 'Limón', isCorrect: false, order: 1 },
@@ -50,7 +50,7 @@ export const PRODUCTOS = [
   {
     question: '¿Qué sistema utiliza Triunfo para cotizar seguros agrícolas?',
     category: TriviaCategory.PRODUCTOS,
-    points: 15,
+    points: 25,
     options: [
       { text: 'AgroNet', isCorrect: false, order: 0 },
       { text: 'Triunfo Net', isCorrect: true, order: 1 },
@@ -61,7 +61,7 @@ export const PRODUCTOS = [
   {
     question: '¿Qué protege el seguro Bolso?',
     category: TriviaCategory.PRODUCTOS,
-    points: 15,
+    points: 25,
     options: [
       { text: 'El automóvil', isCorrect: false, order: 0 },
       { text: 'El hogar', isCorrect: false, order: 1 },
@@ -73,7 +73,7 @@ export const PRODUCTOS = [
     question:
       '¿Cuál de estos elementos está cubierto dentro de la cobertura Bolso Protegido?',
     category: TriviaCategory.PRODUCTOS,
-    points: 15,
+    points: 25,
     options: [
       { text: 'Celular', isCorrect: true, order: 0 },
       { text: 'Televisor', isCorrect: false, order: 1 },
@@ -85,7 +85,7 @@ export const PRODUCTOS = [
     question:
       '¿Desde qué edad se puede contratar un seguro de Bolso Protegido?',
     category: TriviaCategory.PRODUCTOS,
-    points: 15,
+    points: 25,
     options: [
       { text: '16 años', isCorrect: false, order: 0 },
       { text: '18 años', isCorrect: true, order: 1 },
@@ -97,7 +97,7 @@ export const PRODUCTOS = [
     question:
       '¿Cuál de estos objetos está cubierto dentro de una cobertura de Bolso Protegido?',
     category: TriviaCategory.PRODUCTOS,
-    points: 15,
+    points: 25,
     options: [
       { text: 'Perfume', isCorrect: true, order: 0 },
       { text: 'Televisor', isCorrect: false, order: 1 },
@@ -109,7 +109,7 @@ export const PRODUCTOS = [
     question:
       '¿Cuál de estos artículos deportivos está cubierto dentro de un seguro de Bolso?',
     category: TriviaCategory.PRODUCTOS,
-    points: 15,
+    points: 25,
     options: [
       { text: 'Casco de ciclismo', isCorrect: false, order: 0 },
       { text: 'Raqueta de tenis', isCorrect: true, order: 1 },
@@ -121,7 +121,7 @@ export const PRODUCTOS = [
     question:
       '¿Cuál es la cobertura mínima en un seguro de auto obligatoria para circular?',
     category: TriviaCategory.PRODUCTOS,
-    points: 15,
+    points: 25,
     options: [
       { text: 'Todo Riesgo', isCorrect: false, order: 0 },
       { text: 'Terceros Completo', isCorrect: false, order: 1 },
@@ -132,7 +132,7 @@ export const PRODUCTOS = [
   {
     question: '¿Cuál es la cobertura de seguro de Auto más completa?',
     category: TriviaCategory.PRODUCTOS,
-    points: 15,
+    points: 25,
     options: [
       { text: 'Responsabilidad Civil', isCorrect: false, order: 0 },
       { text: 'Todo Total', isCorrect: false, order: 1 },
@@ -143,7 +143,7 @@ export const PRODUCTOS = [
   {
     question: '¿Qué cobertura protege contra robo parcial del vehículo?',
     category: TriviaCategory.PRODUCTOS,
-    points: 15,
+    points: 25,
     options: [
       { text: 'Responsabilidad Civil', isCorrect: false, order: 0 },
       { text: 'Todo Total', isCorrect: false, order: 1 },
@@ -154,7 +154,7 @@ export const PRODUCTOS = [
   {
     question: '¿Qué cobertura incluye daños parciales por accidente?',
     category: TriviaCategory.PRODUCTOS,
-    points: 15,
+    points: 25,
     options: [
       { text: 'Responsabilidad Civil', isCorrect: false, order: 0 },
       { text: 'Todo Total', isCorrect: false, order: 1 },
@@ -166,7 +166,7 @@ export const PRODUCTOS = [
     question:
       '¿Cuál de estas coberturas de seguro de Auto incluye granizo ilimitado?',
     category: TriviaCategory.PRODUCTOS,
-    points: 15,
+    points: 25,
     options: [
       { text: 'Responsabilidad Civil', isCorrect: false, order: 0 },
       { text: 'Todo Total', isCorrect: false, order: 1 },
@@ -178,7 +178,7 @@ export const PRODUCTOS = [
     question:
       '¿Qué elemento adicional puede asegurarse incluso contratando solo Responsabilidad Civil?',
     category: TriviaCategory.PRODUCTOS,
-    points: 15,
+    points: 25,
     options: [
       { text: 'GPS', isCorrect: false, order: 0 },
       { text: 'Polarizado', isCorrect: false, order: 1 },
@@ -189,7 +189,7 @@ export const PRODUCTOS = [
   {
     question: '¿Qué descuento ofrece Triunfo para vehículos nuevos?',
     category: TriviaCategory.PRODUCTOS,
-    points: 15,
+    points: 25,
     options: [
       { text: 'Descuento por flota', isCorrect: false, order: 0 },
       { text: 'Descuento por 0 km', isCorrect: true, order: 1 },
@@ -201,7 +201,7 @@ export const PRODUCTOS = [
     question:
       '¿Qué servicio brinda asistencia cuando el asegurado tiene un inconveniente legal relacionado con un siniestro?',
     category: TriviaCategory.PRODUCTOS,
-    points: 15,
+    points: 25,
     options: [
       { text: 'Servicio mecánico', isCorrect: false, order: 0 },
       { text: 'Asistencia jurídica', isCorrect: true, order: 1 },
@@ -213,7 +213,7 @@ export const PRODUCTOS = [
     question:
       '¿Qué cobertura indemniza daños por incendio total, robo total y accidente total?',
     category: TriviaCategory.PRODUCTOS,
-    points: 15,
+    points: 25,
     options: [
       { text: 'Responsabilidad Civil', isCorrect: false, order: 0 },
       { text: 'Todo Total', isCorrect: true, order: 1 },
@@ -225,7 +225,7 @@ export const PRODUCTOS = [
     question:
       '¿Cuál es uno de los beneficios incluidos para quienes tienen débito automático?',
     category: TriviaCategory.PRODUCTOS,
-    points: 15,
+    points: 25,
     options: [
       { text: 'Servicio de grúa extra', isCorrect: false, order: 0 },
       { text: 'Descuento en la póliza', isCorrect: true, order: 1 },
@@ -236,7 +236,7 @@ export const PRODUCTOS = [
   {
     question: '¿Qué producto protege tu vehículo?',
     category: TriviaCategory.PRODUCTOS,
-    points: 15,
+    points: 25,
     options: [
       { text: 'Hogar', isCorrect: false, order: 0 },
       { text: 'Auto', isCorrect: true, order: 1 },
@@ -247,7 +247,7 @@ export const PRODUCTOS = [
   {
     question: '¿Qué seguro protege una vivienda?',
     category: TriviaCategory.PRODUCTOS,
-    points: 15,
+    points: 25,
     options: [
       { text: 'AP', isCorrect: false, order: 0 },
       { text: 'Hogar', isCorrect: true, order: 1 },
@@ -258,7 +258,7 @@ export const PRODUCTOS = [
   {
     question: '¿Qué producto está pensado para motociclistas?',
     category: TriviaCategory.PRODUCTOS,
-    points: 15,
+    points: 25,
     options: [
       { text: 'Auto', isCorrect: false, order: 0 },
       { text: 'Moto', isCorrect: true, order: 1 },
@@ -269,7 +269,7 @@ export const PRODUCTOS = [
   {
     question: '¿Qué seguro protege una bicicleta?',
     category: TriviaCategory.PRODUCTOS,
-    points: 15,
+    points: 25,
     options: [
       { text: 'Bicicleta y Monopatín', isCorrect: true, order: 0 },
       { text: 'Hogar', isCorrect: false, order: 1 },
@@ -281,7 +281,7 @@ export const PRODUCTOS = [
     question:
       '¿Qué producto protege contra robos de carteras, mochilas y bolsos?',
     category: TriviaCategory.PRODUCTOS,
-    points: 15,
+    points: 25,
     options: [
       { text: 'Robo de Celulares', isCorrect: false, order: 0 },
       { text: 'Bolso Protegido', isCorrect: true, order: 1 },
@@ -292,7 +292,7 @@ export const PRODUCTOS = [
   {
     question: '¿Qué seguro protege a una empresa o local comercial?',
     category: TriviaCategory.PRODUCTOS,
-    points: 15,
+    points: 25,
     options: [
       { text: 'Comercio', isCorrect: true, order: 0 },
       { text: 'Vida', isCorrect: false, order: 1 },
@@ -303,7 +303,7 @@ export const PRODUCTOS = [
   {
     question: '¿Qué producto está dirigido al sector agropecuario?',
     category: TriviaCategory.PRODUCTOS,
-    points: 15,
+    points: 25,
     options: [
       { text: 'Riesgos Agrícolas', isCorrect: true, order: 0 },
       { text: 'Hogar', isCorrect: false, order: 1 },
@@ -314,7 +314,7 @@ export const PRODUCTOS = [
   {
     question: '¿Qué seguro protege a una persona ante accidentes?',
     category: TriviaCategory.PRODUCTOS,
-    points: 15,
+    points: 25,
     options: [
       { text: 'AP (Accidentes Personales)', isCorrect: true, order: 0 },
       { text: 'Hogar', isCorrect: false, order: 1 },
@@ -325,7 +325,7 @@ export const PRODUCTOS = [
   {
     question: '¿Qué seguro se relaciona con garantías contractuales?',
     category: TriviaCategory.PRODUCTOS,
-    points: 15,
+    points: 25,
     options: [
       { text: 'Vida', isCorrect: false, order: 0 },
       { text: 'AP', isCorrect: false, order: 1 },
@@ -336,7 +336,7 @@ export const PRODUCTOS = [
   {
     question: '¿Qué producto protege a los profesionales de la salud?',
     category: TriviaCategory.PRODUCTOS,
-    points: 15,
+    points: 25,
     options: [
       { text: 'Praxis Médica', isCorrect: true, order: 0 },
       { text: 'Hogar', isCorrect: false, order: 1 },
@@ -347,7 +347,7 @@ export const PRODUCTOS = [
   {
     question: '¿Cuál de estos NO es un producto de Triunfo?',
     category: TriviaCategory.PRODUCTOS,
-    points: 15,
+    points: 25,
     options: [
       { text: 'Auto', isCorrect: false, order: 0 },
       { text: 'Hogar', isCorrect: false, order: 1 },
@@ -358,7 +358,7 @@ export const PRODUCTOS = [
   {
     question: '¿Qué producto es ideal para un ciclista urbano?',
     category: TriviaCategory.PRODUCTOS,
-    points: 15,
+    points: 25,
     options: [
       { text: 'Bicicleta y Monopatín', isCorrect: true, order: 0 },
       { text: 'Auto', isCorrect: false, order: 1 },
@@ -369,7 +369,7 @@ export const PRODUCTOS = [
   {
     question: '¿Qué producto contrataría un médico?',
     category: TriviaCategory.PRODUCTOS,
-    points: 15,
+    points: 25,
     options: [
       { text: 'Caución', isCorrect: false, order: 0 },
       { text: 'Praxis Médica', isCorrect: true, order: 1 },
@@ -380,7 +380,7 @@ export const PRODUCTOS = [
   {
     question: '¿Qué seguro contrataría el dueño de una librería?',
     category: TriviaCategory.PRODUCTOS,
-    points: 15,
+    points: 25,
     options: [
       { text: 'Hogar', isCorrect: false, order: 0 },
       { text: 'Comercio', isCorrect: true, order: 1 },
@@ -391,7 +391,7 @@ export const PRODUCTOS = [
   {
     question: '¿Cuál de estos productos protege bienes y patrimonio familiar?',
     category: TriviaCategory.PRODUCTOS,
-    points: 15,
+    points: 25,
     options: [
       { text: 'Hogar', isCorrect: true, order: 0 },
       { text: 'Caución', isCorrect: false, order: 1 },
@@ -402,7 +402,7 @@ export const PRODUCTOS = [
   {
     question: '¿Qué producto protege ante accidentes fuera del ámbito laboral?',
     category: TriviaCategory.PRODUCTOS,
-    points: 15,
+    points: 25,
     options: [
       { text: 'AP (Accidentes Personales)', isCorrect: true, order: 0 },
       { text: 'Comercio', isCorrect: false, order: 1 },
@@ -414,7 +414,7 @@ export const PRODUCTOS = [
     question:
       'Si te roban la mochila con el celular dentro, ¿qué producto podría ayudarte?',
     category: TriviaCategory.PRODUCTOS,
-    points: 15,
+    points: 25,
     options: [
       { text: 'Hogar', isCorrect: false, order: 0 },
       { text: 'Bolso Protegido', isCorrect: true, order: 1 },
@@ -426,7 +426,7 @@ export const PRODUCTOS = [
     question:
       '¿Qué producto ofrece cobertura para sembradíos afectados por fenómenos climáticos?',
     category: TriviaCategory.PRODUCTOS,
-    points: 15,
+    points: 25,
     options: [
       { text: 'AP', isCorrect: false, order: 0 },
       { text: 'Riesgos Agrícolas', isCorrect: true, order: 1 },
@@ -438,7 +438,7 @@ export const PRODUCTOS = [
     question:
       '¿Qué producto contrataría una empresa para garantizar el cumplimiento de un contrato?',
     category: TriviaCategory.PRODUCTOS,
-    points: 15,
+    points: 25,
     options: [
       { text: 'AP', isCorrect: false, order: 0 },
       { text: 'Caución', isCorrect: true, order: 1 },
@@ -449,7 +449,7 @@ export const PRODUCTOS = [
   {
     question: '¿Qué producto contrataría un repartidor que utiliza una moto?',
     category: TriviaCategory.PRODUCTOS,
-    points: 15,
+    points: 25,
     options: [
       { text: 'Hogar', isCorrect: false, order: 0 },
       { text: 'Moto', isCorrect: true, order: 1 },

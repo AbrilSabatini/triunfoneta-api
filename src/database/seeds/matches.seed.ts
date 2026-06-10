@@ -1,5 +1,9 @@
 import { Repository } from 'typeorm';
-import { Match, MatchGroup, MatchStage } from '../prode/entities/match.entity';
+import {
+  Match,
+  MatchGroup,
+  MatchStage,
+} from '../../prode/entities/match.entity';
 
 type MatchSeedData = {
   homeTeam: string;

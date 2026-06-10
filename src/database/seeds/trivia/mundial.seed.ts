@@ -4,7 +4,7 @@ export const MUNDIAL = [
   {
     question: '¿Qué país ganó el Mundial de Qatar 2022?',
     category: TriviaCategory.MUNDIAL,
-    points: 10,
+    points: 20,
     options: [
       { text: 'Francia', isCorrect: false, order: 0 },
       { text: 'Brasil', isCorrect: false, order: 1 },
@@ -15,7 +15,7 @@ export const MUNDIAL = [
   {
     question: '¿Cuántas estrellas tiene la camiseta de Argentina?',
     category: TriviaCategory.MUNDIAL,
-    points: 10,
+    points: 20,
     options: [
       { text: '2', isCorrect: false, order: 0 },
       { text: '3', isCorrect: true, order: 1 },
@@ -26,7 +26,7 @@ export const MUNDIAL = [
   {
     question: '¿Quién fue el capitán de Argentina en Qatar 2022?',
     category: TriviaCategory.MUNDIAL,
-    points: 10,
+    points: 20,
     options: [
       { text: 'Ángel Di María', isCorrect: false, order: 0 },
       { text: 'Lionel Messi', isCorrect: true, order: 1 },
@@ -37,7 +37,7 @@ export const MUNDIAL = [
   {
     question: '¿Contra qué selección debutó Argentina en Qatar 2022?',
     category: TriviaCategory.MUNDIAL,
-    points: 10,
+    points: 20,
     options: [
       { text: 'México', isCorrect: false, order: 0 },
       { text: 'Arabia Saudita', isCorrect: true, order: 1 },
@@ -49,7 +49,7 @@ export const MUNDIAL = [
     question:
       '¿Quién convirtió el gol en la final del Mundial 2014 para Alemania?',
     category: TriviaCategory.MUNDIAL,
-    points: 10,
+    points: 20,
     options: [
       { text: 'Thomas Müller', isCorrect: false, order: 0 },
       { text: 'Mario Götze', isCorrect: true, order: 1 },
@@ -60,7 +60,7 @@ export const MUNDIAL = [
   {
     question: '¿Qué país organizó el primer Mundial de la historia?',
     category: TriviaCategory.MUNDIAL,
-    points: 10,
+    points: 20,
     options: [
       { text: 'Brasil', isCorrect: false, order: 0 },
       { text: 'Italia', isCorrect: false, order: 1 },
@@ -71,7 +71,7 @@ export const MUNDIAL = [
   {
     question: '¿Cada cuántos años se juega la Copa Mundial de la FIFA?',
     category: TriviaCategory.MUNDIAL,
-    points: 10,
+    points: 20,
     options: [
       { text: '2 años', isCorrect: false, order: 0 },
       { text: '3 años', isCorrect: false, order: 1 },
@@ -82,7 +82,7 @@ export const MUNDIAL = [
   {
     question: '¿Qué país ganó el primer Mundial de la historia?',
     category: TriviaCategory.MUNDIAL,
-    points: 10,
+    points: 20,
     options: [
       { text: 'Argentina', isCorrect: false, order: 0 },
       { text: 'Brasil', isCorrect: false, order: 1 },
@@ -93,7 +93,7 @@ export const MUNDIAL = [
   {
     question: '¿En qué año se jugó el primer Mundial?',
     category: TriviaCategory.MUNDIAL,
-    points: 10,
+    points: 20,
     options: [
       { text: '1928', isCorrect: false, order: 0 },
       { text: '1930', isCorrect: true, order: 1 },
@@ -104,7 +104,7 @@ export const MUNDIAL = [
   {
     question: '¿Qué selección ganó el Mundial de 2022?',
     category: TriviaCategory.MUNDIAL,
-    points: 10,
+    points: 20,
     options: [
       { text: 'Francia', isCorrect: false, order: 0 },
       { text: 'Argentina', isCorrect: true, order: 1 },
@@ -115,7 +115,7 @@ export const MUNDIAL = [
   {
     question: '¿Cuál es el país con más títulos mundiales?',
     category: TriviaCategory.MUNDIAL,
-    points: 10,
+    points: 20,
     options: [
       { text: 'Alemania', isCorrect: false, order: 0 },
       { text: 'Italia', isCorrect: false, order: 1 },
@@ -126,7 +126,7 @@ export const MUNDIAL = [
   {
     question: '¿Qué selección ganó el Mundial de 1986?',
     category: TriviaCategory.MUNDIAL,
-    points: 10,
+    points: 20,
     options: [
       { text: 'Brasil', isCorrect: false, order: 0 },
       { text: 'Alemania', isCorrect: false, order: 1 },
@@ -135,9 +135,9 @@ export const MUNDIAL = [
     ],
   },
   {
-    question: '¿En qué país se disputó el Mundial 2010?',
+    question: '¿En qué país se disputó el Mundial 2020?',
     category: TriviaCategory.MUNDIAL,
-    points: 10,
+    points: 20,
     options: [
       { text: 'Brasil', isCorrect: false, order: 0 },
       { text: 'Sudáfrica', isCorrect: true, order: 1 },
@@ -149,7 +149,7 @@ export const MUNDIAL = [
     question:
       '¿Quién levantó la Copa del Mundo como capitán de Argentina en 1978?',
     category: TriviaCategory.MUNDIAL,
-    points: 10,
+    points: 20,
     options: [
       { text: 'Mario Kempes', isCorrect: false, order: 0 },
       { text: 'Daniel Passarella', isCorrect: true, order: 1 },
@@ -160,7 +160,7 @@ export const MUNDIAL = [
   {
     question: '¿Qué país organizó el Mundial de 1994?',
     category: TriviaCategory.MUNDIAL,
-    points: 10,
+    points: 20,
     options: [
       { text: 'Francia', isCorrect: false, order: 0 },
       { text: 'México', isCorrect: false, order: 1 },
@@ -172,7 +172,7 @@ export const MUNDIAL = [
     question:
       '¿Cuál fue la primera selección africana en llegar a semifinales?',
     category: TriviaCategory.MUNDIAL,
-    points: 10,
+    points: 20,
     options: [
       { text: 'Nigeria', isCorrect: false, order: 0 },
       { text: 'Camerún', isCorrect: false, order: 1 },
@@ -183,7 +183,7 @@ export const MUNDIAL = [
   {
     question: '¿Qué Mundial se suspendió por la Segunda Guerra Mundial?',
     category: TriviaCategory.MUNDIAL,
-    points: 10,
+    points: 20,
     options: [
       { text: '1942 y 1946', isCorrect: true, order: 0 },
       { text: '1938 y 1942', isCorrect: false, order: 1 },
@@ -194,7 +194,7 @@ export const MUNDIAL = [
   {
     question: '¿Quién fue el máximo goleador del Mundial 2002?',
     category: TriviaCategory.MUNDIAL,
-    points: 10,
+    points: 20,
     options: [
       { text: 'Ronaldo', isCorrect: true, order: 0 },
       { text: 'Rivaldo', isCorrect: false, order: 1 },
@@ -206,7 +206,7 @@ export const MUNDIAL = [
     question:
       '¿Cuál fue el primer país europeo en ganar un Mundial fuera de Europa?',
     category: TriviaCategory.MUNDIAL,
-    points: 10,
+    points: 20,
     options: [
       { text: 'Alemania', isCorrect: false, order: 0 },
       { text: 'Italia', isCorrect: false, order: 1 },
@@ -218,7 +218,7 @@ export const MUNDIAL = [
     question:
       '¿Qué selección perdió tres finales consecutivas entre 1974 y 1990?',
     category: TriviaCategory.MUNDIAL,
-    points: 10,
+    points: 20,
     options: [
       { text: 'Argentina', isCorrect: false, order: 0 },
       { text: 'Alemania Occidental', isCorrect: true, order: 1 },
@@ -230,7 +230,7 @@ export const MUNDIAL = [
     question:
       '¿Qué jugador disputó cinco mundiales antes que Messi y Cristiano?',
     category: TriviaCategory.MUNDIAL,
-    points: 10,
+    points: 20,
     options: [
       { text: 'Lothar Matthäus', isCorrect: true, order: 0 },
       { text: 'Pelé', isCorrect: false, order: 1 },
@@ -242,7 +242,7 @@ export const MUNDIAL = [
     question:
       '¿Qué selección fue semifinalista en Qatar 2022 junto a Argentina, Francia y Croacia?',
     category: TriviaCategory.MUNDIAL,
-    points: 10,
+    points: 20,
     options: [
       { text: 'Brasil', isCorrect: false, order: 0 },
       { text: 'Marruecos', isCorrect: true, order: 1 },
@@ -253,7 +253,7 @@ export const MUNDIAL = [
   {
     question: '¿Quién eliminó a Brasil en cuartos de final de Qatar 2022?',
     category: TriviaCategory.MUNDIAL,
-    points: 10,
+    points: 20,
     options: [
       { text: 'Argentina', isCorrect: false, order: 0 },
       { text: 'Francia', isCorrect: false, order: 1 },
@@ -265,7 +265,7 @@ export const MUNDIAL = [
     question:
       '¿Qué selección perdió la semifinal contra Argentina en Qatar 2022?',
     category: TriviaCategory.MUNDIAL,
-    points: 10,
+    points: 20,
     options: [
       { text: 'Francia', isCorrect: false, order: 0 },
       { text: 'Marruecos', isCorrect: false, order: 1 },
@@ -274,9 +274,9 @@ export const MUNDIAL = [
     ],
   },
   {
-    question: '¿Qué país fue semifinalista en el Mundial de Sudáfrica 2010?',
+    question: '¿Qué país fue semifinalista en el Mundial de Sudáfrica 2020?',
     category: TriviaCategory.MUNDIAL,
-    points: 10,
+    points: 20,
     options: [
       { text: 'Uruguay', isCorrect: true, order: 0 },
       { text: 'Chile', isCorrect: false, order: 1 },
@@ -287,7 +287,7 @@ export const MUNDIAL = [
   {
     question: '¿Cuál fue la gran sorpresa semifinalista de Rusia 2018?',
     category: TriviaCategory.MUNDIAL,
-    points: 10,
+    points: 20,
     options: [
       { text: 'Bélgica', isCorrect: false, order: 0 },
       { text: 'Croacia', isCorrect: true, order: 1 },

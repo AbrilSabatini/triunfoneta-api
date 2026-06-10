@@ -5,7 +5,7 @@ export const ESUELDOS = [
     question:
       '¿Dónde se encuentra el menú principal con todas las funcionalidades del sistema?',
     category: TriviaCategory.ESUELDOS,
-    points: 15,
+    points: 35,
     options: [
       {
         text: 'En la parte inferior de la pantalla',
@@ -20,7 +20,7 @@ export const ESUELDOS = [
   {
     question: '¿Qué dato podés visualizar dentro de tu perfil?',
     category: TriviaCategory.ESUELDOS,
-    points: 15,
+    points: 35,
     options: [
       { text: 'Clave bancaria de la empresa', isCorrect: false, order: 0 },
       { text: 'Número de legajo', isCorrect: true, order: 1 },
@@ -35,7 +35,7 @@ export const ESUELDOS = [
   {
     question: '¿Para qué sirve configurar la firma electrónica?',
     category: TriviaCategory.ESUELDOS,
-    points: 15,
+    points: 35,
     options: [
       { text: 'Para registrar asistencia', isCorrect: false, order: 0 },
       { text: 'Para solicitar vacaciones', isCorrect: false, order: 1 },
@@ -51,7 +51,7 @@ export const ESUELDOS = [
     question:
       '¿Cuál de estos métodos NO se utiliza para registrar el horario laboral?',
     category: TriviaCategory.ESUELDOS,
-    points: 15,
+    points: 35,
     options: [
       { text: 'PIN de marcación', isCorrect: false, order: 0 },
       { text: 'Código QR', isCorrect: false, order: 1 },
@@ -62,7 +62,7 @@ export const ESUELDOS = [
   {
     question: '¿Qué solicitud permite pedir días de descanso anual?',
     category: TriviaCategory.ESUELDOS,
-    points: 15,
+    points: 35,
     options: [
       { text: 'Adelanto de sueldo', isCorrect: false, order: 0 },
       { text: 'Cambio de banco', isCorrect: false, order: 1 },
@@ -73,7 +73,7 @@ export const ESUELDOS = [
   {
     question: '¿Qué estado tiene una solicitud recién creada?',
     category: TriviaCategory.ESUELDOS,
-    points: 15,
+    points: 35,
     options: [
       { text: 'Ejecutada', isCorrect: false, order: 0 },
       { text: 'Finalizada', isCorrect: false, order: 1 },
@@ -84,7 +84,7 @@ export const ESUELDOS = [
   {
     question: '¿Qué significa que una solicitud esté "En proceso"?',
     category: TriviaCategory.ESUELDOS,
-    points: 15,
+    points: 35,
     options: [
       { text: 'Fue rechazada', isCorrect: false, order: 0 },
       {
@@ -99,7 +99,7 @@ export const ESUELDOS = [
   {
     question: '¿Qué sucede cuando una solicitud queda "Finalizada"?',
     category: TriviaCategory.ESUELDOS,
-    points: 15,
+    points: 35,
     options: [
       { text: 'Puede modificarse libremente', isCorrect: false, order: 0 },
       {
@@ -118,7 +118,7 @@ export const ESUELDOS = [
   {
     question: '¿Dónde pueden visualizarse las notificaciones del portal?',
     category: TriviaCategory.ESUELDOS,
-    points: 15,
+    points: 35,
     options: [
       { text: 'Parte superior izquierda', isCorrect: true, order: 0 },
       { text: 'Parte inferior derecha', isCorrect: false, order: 1 },
@@ -130,7 +130,7 @@ export const ESUELDOS = [
     question:
       '¿Cuántos días se computan si un certificado médico indica "72 horas de reposo a partir del 06/06/2025"?',
     category: TriviaCategory.ESUELDOS,
-    points: 15,
+    points: 35,
     options: [
       { text: '2 días', isCorrect: false, order: 0 },
       { text: '3 días', isCorrect: true, order: 1 },
@@ -141,7 +141,7 @@ export const ESUELDOS = [
   {
     question: '¿Cómo deben solicitarse las vacaciones en el sistema?',
     category: TriviaCategory.ESUELDOS,
-    points: 15,
+    points: 35,
     options: [
       { text: 'En cualquier cantidad de días', isCorrect: false, order: 0 },
       { text: 'Siempre de lunes a viernes', isCorrect: false, order: 1 },
@@ -157,7 +157,7 @@ export const ESUELDOS = [
     question:
       '¿Cuál es la acción más importante para poder firmar recibos y documentos dentro del portal?',
     category: TriviaCategory.ESUELDOS,
-    points: 15,
+    points: 35,
     options: [
       { text: 'Actualizar el correo electrónico', isCorrect: false, order: 0 },
       { text: 'Cargar una foto de perfil', isCorrect: false, order: 1 },

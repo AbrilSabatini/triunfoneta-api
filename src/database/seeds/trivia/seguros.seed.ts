@@ -4,7 +4,7 @@ export const SEGUROS = [
   {
     question: '¿Qué organismo regula la actividad aseguradora en Argentina?',
     category: TriviaCategory.SEGUROS,
-    points: 15,
+    points: 25,
     options: [
       { text: 'AFIP', isCorrect: false, order: 0 },
       { text: 'Banco Central', isCorrect: false, order: 1 },
@@ -15,7 +15,7 @@ export const SEGUROS = [
   {
     question: '¿Qué significa PAS?',
     category: TriviaCategory.SEGUROS,
-    points: 15,
+    points: 25,
     options: [
       { text: 'Productor Asesor de Seguros', isCorrect: true, order: 0 },
       { text: 'Plan Anual de Seguros', isCorrect: false, order: 1 },
@@ -30,7 +30,7 @@ export const SEGUROS = [
   {
     question: '¿Cuál de estas compañías es competencia de Triunfo?',
     category: TriviaCategory.SEGUROS,
-    points: 15,
+    points: 25,
     options: [
       { text: 'Federación Patronal', isCorrect: true, order: 0 },
       { text: 'Mercado Libre', isCorrect: false, order: 1 },
@@ -41,7 +41,7 @@ export const SEGUROS = [
   {
     question: '¿Cuál de estas es una aseguradora?',
     category: TriviaCategory.SEGUROS,
-    points: 15,
+    points: 25,
     options: [
       { text: 'Sancor Seguros', isCorrect: true, order: 0 },
       { text: 'Arcor', isCorrect: false, order: 1 },
@@ -52,7 +52,7 @@ export const SEGUROS = [
   {
     question: '¿Qué significa que una compañía tenga "solvencia"?',
     category: TriviaCategory.SEGUROS,
-    points: 15,
+    points: 25,
     options: [
       {
         text: 'Que puede pagar sus compromisos y siniestros',

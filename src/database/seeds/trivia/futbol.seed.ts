@@ -4,7 +4,7 @@ export const FUTBOL = [
   {
     question: '¿Quién es conocido como "O Rei"?',
     category: TriviaCategory.FUTBOL,
-    points: 10,
+    points: 25,
     options: [
       { text: 'Maradona', isCorrect: false, order: 0 },
       { text: 'Messi', isCorrect: false, order: 1 },
@@ -15,7 +15,7 @@ export const FUTBOL = [
   {
     question: '¿Qué jugador argentino es conocido como "El Diez"?',
     category: TriviaCategory.FUTBOL,
-    points: 10,
+    points: 25,
     options: [
       { text: 'Messi', isCorrect: false, order: 0 },
       { text: 'Kempes', isCorrect: false, order: 1 },
@@ -26,7 +26,7 @@ export const FUTBOL = [
   {
     question: '¿Qué jugador ganó el Mundial de 1986 con Argentina?',
     category: TriviaCategory.FUTBOL,
-    points: 10,
+    points: 25,
     options: [
       { text: 'Batistuta', isCorrect: false, order: 0 },
       { text: 'Maradona', isCorrect: true, order: 1 },
@@ -38,7 +38,7 @@ export const FUTBOL = [
     question:
       '¿Qué futbolista es considerado el máximo goleador de la historia de los Mundiales?',
     category: TriviaCategory.FUTBOL,
-    points: 10,
+    points: 25,
     options: [
       { text: 'Ronaldo', isCorrect: false, order: 0 },
       { text: 'Pelé', isCorrect: false, order: 1 },
@@ -50,7 +50,7 @@ export const FUTBOL = [
     question:
       '¿Qué jugador levantó la Copa del Mundo con Argentina en Qatar 2022?',
     category: TriviaCategory.FUTBOL,
-    points: 10,
+    points: 25,
     options: [
       { text: 'Di María', isCorrect: false, order: 0 },
       { text: 'Otamendi', isCorrect: false, order: 1 },
@@ -62,7 +62,7 @@ export const FUTBOL = [
     question:
       '¿Quién convirtió los dos goles de Argentina en la final de México 1986?',
     category: TriviaCategory.FUTBOL,
-    points: 10,
+    points: 25,
     options: [
       { text: 'Jorge Valdano', isCorrect: false, order: 0 },
       { text: 'Diego Maradona', isCorrect: false, order: 1 },
@@ -77,7 +77,7 @@ export const FUTBOL = [
   {
     question: '¿Qué leyenda francesa marcó dos goles en la final de 1998?',
     category: TriviaCategory.FUTBOL,
-    points: 10,
+    points: 25,
     options: [
       { text: 'Thierry Henry', isCorrect: false, order: 0 },
       { text: 'Michel Platini', isCorrect: false, order: 1 },
@@ -88,7 +88,7 @@ export const FUTBOL = [
   {
     question: '¿Quién anotó un triplete en la final de Qatar 2022?',
     category: TriviaCategory.FUTBOL,
-    points: 10,
+    points: 25,
     options: [
       { text: 'Messi', isCorrect: false, order: 0 },
       { text: 'Julián Álvarez', isCorrect: false, order: 1 },
@@ -99,7 +99,7 @@ export const FUTBOL = [
   {
     question: '¿Qué jugador brasileño ganó tres Mundiales?',
     category: TriviaCategory.FUTBOL,
-    points: 10,
+    points: 25,
     options: [
       { text: 'Romario', isCorrect: false, order: 0 },
       { text: 'Ronaldo', isCorrect: false, order: 1 },
@@ -111,7 +111,7 @@ export const FUTBOL = [
     question:
       '¿Quién es el máximo goleador histórico de Argentina en Mundiales?',
     category: TriviaCategory.FUTBOL,
-    points: 10,
+    points: 25,
     options: [
       { text: 'Batistuta', isCorrect: true, order: 0 },
       { text: 'Messi', isCorrect: false, order: 1 },

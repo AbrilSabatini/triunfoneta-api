@@ -4,7 +4,7 @@ export const TRIUNFO = [
   {
     question: '¿En qué año nació Triunfo Seguros?',
     category: TriviaCategory.TRIUNFO,
-    points: 15,
+    points: 35,
     options: [
       { text: '1965', isCorrect: false, order: 0 },
       { text: '1967', isCorrect: true, order: 1 },
@@ -15,7 +15,7 @@ export const TRIUNFO = [
   {
     question: '¿Quién fue el fundador de Triunfo Seguros?',
     category: TriviaCategory.TRIUNFO,
-    points: 15,
+    points: 35,
     options: [
       { text: 'Sebastián Pierrini', isCorrect: false, order: 0 },
       { text: 'Carlos Pierrini', isCorrect: false, order: 1 },
@@ -26,7 +26,7 @@ export const TRIUNFO = [
   {
     question: '¿Cuál es la sede legal de Triunfo Seguros?',
     category: TriviaCategory.TRIUNFO,
-    points: 15,
+    points: 35,
     options: [
       { text: 'Mendoza', isCorrect: true, order: 0 },
       { text: 'Córdoba', isCorrect: false, order: 1 },
@@ -37,7 +37,7 @@ export const TRIUNFO = [
   {
     question: '¿Cuántos clientes posee aproximadamente la compañía?',
     category: TriviaCategory.TRIUNFO,
-    points: 15,
+    points: 35,
     options: [
       { text: '250.000', isCorrect: false, order: 0 },
       { text: '400.000', isCorrect: false, order: 1 },
@@ -48,7 +48,7 @@ export const TRIUNFO = [
   {
     question: '¿Cuál de estos es un valor corporativo?',
     category: TriviaCategory.TRIUNFO,
-    points: 15,
+    points: 35,
     options: [
       { text: 'Competencia', isCorrect: false, order: 0 },
       { text: 'Honestidad', isCorrect: true, order: 1 },
@@ -59,7 +59,7 @@ export const TRIUNFO = [
   {
     question: '¿Cuál es la misión principal de la empresa?',
     category: TriviaCategory.TRIUNFO,
-    points: 15,
+    points: 35,
     options: [
       { text: 'Ser líder internacional', isCorrect: false, order: 0 },
       {
@@ -77,7 +77,7 @@ export const TRIUNFO_FILIALES = [
   {
     question: '¿Quién es la Subgerente General de Operaciones & IT?',
     category: TriviaCategory.TRIUNFO,
-    points: 15,
+    points: 35,
     options: [
       { text: 'Mariana Ristagno', isCorrect: false, order: 0 },
       { text: 'Mónica Magni', isCorrect: true, order: 1 },
@@ -88,7 +88,7 @@ export const TRIUNFO_FILIALES = [
   {
     question: '¿Quién lidera Proyectos e Innovación?',
     category: TriviaCategory.TRIUNFO,
-    points: 15,
+    points: 35,
     options: [
       { text: 'María Bensadon', isCorrect: false, order: 0 },
       { text: 'Inés Veloce', isCorrect: true, order: 1 },
@@ -99,7 +99,7 @@ export const TRIUNFO_FILIALES = [
   {
     question: '¿Quién es el Gerente de Negocios Corporativos?',
     category: TriviaCategory.TRIUNFO,
-    points: 15,
+    points: 35,
     options: [
       { text: 'Lucas Ferrante', isCorrect: true, order: 0 },
       { text: 'Gonzalo Ferreyra', isCorrect: false, order: 1 },
@@ -110,7 +110,7 @@ export const TRIUNFO_FILIALES = [
   {
     question: '¿Quién lidera la Gerencia Técnica y Reaseguros?',
     category: TriviaCategory.TRIUNFO,
-    points: 15,
+    points: 35,
     options: [
       { text: 'Martín Allamand', isCorrect: false, order: 0 },
       { text: 'Gonzalo Ferreyra', isCorrect: true, order: 1 },
@@ -121,7 +121,7 @@ export const TRIUNFO_FILIALES = [
   {
     question: '¿Quién es la Gerente de Comunicación, Estrategia & Marketing?',
     category: TriviaCategory.TRIUNFO,
-    points: 15,
+    points: 35,
     options: [
       { text: 'María Day', isCorrect: false, order: 0 },
       { text: 'María Bensadon', isCorrect: true, order: 1 },
@@ -132,7 +132,7 @@ export const TRIUNFO_FILIALES = [
   {
     question: '¿Cuál de estas ciudades tiene una filial de Triunfo?',
     category: TriviaCategory.TRIUNFO,
-    points: 15,
+    points: 35,
     options: [
       { text: 'Ushuaia', isCorrect: false, order: 0 },
       { text: 'Neuquén', isCorrect: true, order: 1 },
@@ -143,7 +143,7 @@ export const TRIUNFO_FILIALES = [
   {
     question: '¿En qué Filial está Gabriel del Giovanino?',
     category: TriviaCategory.TRIUNFO,
-    points: 15,
+    points: 35,
     options: [
       { text: 'Mar del Plata', isCorrect: true, order: 0 },
       { text: 'Bahía Blanca', isCorrect: false, order: 1 },
@@ -154,7 +154,7 @@ export const TRIUNFO_FILIALES = [
   {
     question: '¿En qué provincia se encuentra la filial de Río Cuarto?',
     category: TriviaCategory.TRIUNFO,
-    points: 15,
+    points: 35,
     options: [
       { text: 'Mendoza', isCorrect: false, order: 0 },
       { text: 'Córdoba', isCorrect: true, order: 1 },
@@ -165,7 +165,7 @@ export const TRIUNFO_FILIALES = [
   {
     question: '¿Cuál de estas filiales se encuentra en la Patagonia?',
     category: TriviaCategory.TRIUNFO,
-    points: 15,
+    points: 35,
     options: [
       { text: 'Tucumán', isCorrect: false, order: 0 },
       { text: 'Jujuy', isCorrect: false, order: 1 },
@@ -176,7 +176,7 @@ export const TRIUNFO_FILIALES = [
   {
     question: '¿Cuál de estas ciudades NO tiene filial de Triunfo?',
     category: TriviaCategory.TRIUNFO,
-    points: 15,
+    points: 35,
     options: [
       { text: 'Posadas', isCorrect: false, order: 0 },
       { text: 'Tandil', isCorrect: false, order: 1 },
@@ -187,7 +187,7 @@ export const TRIUNFO_FILIALES = [
   {
     question: '¿De qué Filial es Mauricio Fernandez?',
     category: TriviaCategory.TRIUNFO,
-    points: 15,
+    points: 35,
     options: [
       { text: 'Posadas', isCorrect: false, order: 0 },
       { text: 'San Juan', isCorrect: false, order: 1 },
@@ -199,7 +199,7 @@ export const TRIUNFO_FILIALES = [
     question:
       '¿Quién de las siguientes personas NO es un supervisor de Filial?',
     category: TriviaCategory.TRIUNFO,
-    points: 15,
+    points: 35,
     options: [
       { text: 'Alejandro Jaure', isCorrect: false, order: 0 },
       { text: 'Javier Distante', isCorrect: false, order: 1 },
@@ -210,7 +210,7 @@ export const TRIUNFO_FILIALES = [
   {
     question: '¿Quién es el responsable del sector de Emisión Autos?',
     category: TriviaCategory.TRIUNFO,
-    points: 15,
+    points: 35,
     options: [
       { text: 'Raúl Magni', isCorrect: false, order: 0 },
       { text: 'Pablo Luquez', isCorrect: false, order: 1 },
@@ -221,7 +221,7 @@ export const TRIUNFO_FILIALES = [
   {
     question: '¿Dónde se encuentra ubicada el área de Contabilidad?',
     category: TriviaCategory.TRIUNFO,
-    points: 15,
+    points: 35,
     options: [
       {
         text: 'Costanera (Pedro B. Palacios 2650)',
@@ -236,7 +236,7 @@ export const TRIUNFO_FILIALES = [
   {
     question: '¿A qué área pertenece Mariel Geli?',
     category: TriviaCategory.TRIUNFO,
-    points: 15,
+    points: 35,
     options: [
       { text: 'Comercial', isCorrect: false, order: 0 },
       { text: 'RRHH', isCorrect: true, order: 1 },
@@ -247,7 +247,7 @@ export const TRIUNFO_FILIALES = [
   {
     question: '¿En qué gerencia trabaja Jorge Sansone?',
     category: TriviaCategory.TRIUNFO,
-    points: 15,
+    points: 35,
     options: [
       { text: 'Siniestros', isCorrect: false, order: 0 },
       { text: 'Gestión y Auditoría de Costos', isCorrect: true, order: 1 },
@@ -258,7 +258,7 @@ export const TRIUNFO_FILIALES = [
   {
     question: '¿Quién es el Gerente de Legales?',
     category: TriviaCategory.TRIUNFO,
-    points: 15,
+    points: 35,
     options: [
       { text: 'Martín Allamand', isCorrect: false, order: 0 },
       { text: 'Carlos Aranda', isCorrect: true, order: 1 },
@@ -269,7 +269,7 @@ export const TRIUNFO_FILIALES = [
   {
     question: '¿Quién lidera Contabilidad?',
     category: TriviaCategory.TRIUNFO,
-    points: 15,
+    points: 35,
     options: [
       { text: 'Mariana Marcucci', isCorrect: true, order: 0 },
       { text: 'Mariana Ristagno', isCorrect: false, order: 1 },
@@ -280,7 +280,7 @@ export const TRIUNFO_FILIALES = [
   {
     question: '¿Qué filial se encuentra más al sur?',
     category: TriviaCategory.TRIUNFO,
-    points: 15,
+    points: 35,
     options: [
       { text: 'Neuquén', isCorrect: false, order: 0 },
       { text: 'Río Gallegos', isCorrect: true, order: 1 },
@@ -291,7 +291,7 @@ export const TRIUNFO_FILIALES = [
   {
     question: '¿Quién es el Subgerente de Filiales?',
     category: TriviaCategory.TRIUNFO,
-    points: 15,
+    points: 35,
     options: [
       { text: 'Alejandro Jaure', isCorrect: false, order: 0 },
       { text: 'Marcos Asalí', isCorrect: true, order: 1 },
@@ -302,7 +302,7 @@ export const TRIUNFO_FILIALES = [
   {
     question: '¿Qué filial se encuentra en Misiones?',
     category: TriviaCategory.TRIUNFO,
-    points: 15,
+    points: 35,
     options: [
       { text: 'Posadas', isCorrect: true, order: 0 },
       { text: 'Chaco', isCorrect: false, order: 1 },
@@ -313,7 +313,7 @@ export const TRIUNFO_FILIALES = [
   {
     question: '¿Cuántas Subgerencias Generales tiene la compañía?',
     category: TriviaCategory.TRIUNFO,
-    points: 15,
+    points: 35,
     options: [
       { text: '2', isCorrect: true, order: 0 },
       { text: '3', isCorrect: false, order: 1 },
@@ -324,7 +324,7 @@ export const TRIUNFO_FILIALES = [
   {
     question: '¿Antonio Cerdera y Sebastián Marro de qué Filial son?',
     category: TriviaCategory.TRIUNFO,
-    points: 15,
+    points: 35,
     options: [
       { text: 'Córdoba', isCorrect: true, order: 0 },
       { text: 'Río IV', isCorrect: false, order: 1 },
@@ -336,7 +336,7 @@ export const TRIUNFO_FILIALES = [
     question:
       '¿Quiénes de las siguientes personas trabajan en Atención al Cliente?',
     category: TriviaCategory.TRIUNFO,
-    points: 15,
+    points: 35,
     options: [
       {
         text: 'Agostina Astray, Daniel García y Marcela Zuin',
@@ -363,7 +363,7 @@ export const TRIUNFO_FILIALES = [
   {
     question: '¿Cómo se llama la asistente virtual de Triunfo?',
     category: TriviaCategory.TRIUNFO,
-    points: 15,
+    points: 35,
     options: [
       { text: 'Mery', isCorrect: false, order: 0 },
       { text: 'Bety', isCorrect: true, order: 1 },
@@ -375,7 +375,7 @@ export const TRIUNFO_FILIALES = [
     question:
       '¿Quiénes de las siguientes personas son suscriptores de Casa Central?',
     category: TriviaCategory.TRIUNFO,
-    points: 15,
+    points: 35,
     options: [
       { text: 'María Day y Viviana Vazquez', isCorrect: false, order: 0 },
       { text: 'Leonardo Blanco y Gabriel Ferreyra', isCorrect: true, order: 1 },
@@ -386,7 +386,7 @@ export const TRIUNFO_FILIALES = [
   {
     question: '¿Quiénes de las siguientes personas son Gerentes?',
     category: TriviaCategory.TRIUNFO,
-    points: 15,
+    points: 35,
     options: [
       {
         text: 'Néstor Renn, Graciela Blanco y José Luis Risso',
