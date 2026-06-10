@@ -4,30 +4,21 @@ import { DataSource } from 'typeorm';
 dotenv.config();
 
 import { Area } from '../../areas/entities/area.entity';
-import { MailQueue } from '../../mail/entities/mail-queue.entity';
-import { PointTransaction } from '../../points/entities/point-transaction.entity';
-import { Sticker } from '../../users/entities/sticker.entity';
 import { User } from '../../users/entities/user.entity';
 
+import { Config } from '../../configs/entities/config.entity';
+import { Match } from '../../prode/entities/match.entity';
 import { TriviaOption } from '../../trivia/entities/trivia-option.entity';
 import { TriviaQuestion } from '../../trivia/entities/trivia-question.entity';
 import { seedAreas } from './areas.seed';
-import { seedStickers } from './stickers.seed';
+import { seedConfigs } from './configs.seed';
 import { seedTrivia } from './trivia.seed';
 import { seedUsers } from './users.seed';
 
 const AppDataSource = new DataSource({
   type: 'postgres',
   url: process.env.DATABASE_URL,
-  entities: [
-    Area,
-    User,
-    Sticker,
-    PointTransaction,
-    MailQueue,
-    TriviaQuestion,
-    TriviaOption,
-  ],
+  entities: [Area, User, TriviaQuestion, TriviaOption, Match, Config],
   synchronize: true,
   logging: false,
 });
@@ -40,9 +31,10 @@ async function run() {
 
   const areaRepo = AppDataSource.getRepository(Area);
   const userRepo = AppDataSource.getRepository(User);
-  const stickerRepo = AppDataSource.getRepository(Sticker);
   const questionRepo = AppDataSource.getRepository(TriviaQuestion);
   const optionRepo = AppDataSource.getRepository(TriviaOption);
+  const configRepo = AppDataSource.getRepository(Config);
+  const matchRepo = AppDataSource.getRepository(Match);
 
   const areas = await seedAreas(areaRepo);
   console.log(` Áreas: ${areas.length} registros\n`);
@@ -50,10 +42,10 @@ async function run() {
   const users = await seedUsers(userRepo, areas);
   console.log(` Usuarios: ${users.length} registros\n`);
 
-  await seedStickers(stickerRepo, users);
-  console.log(` Figuritas creadas\n`);
-
   await seedTrivia(questionRepo, optionRepo, dataSource);
+
+  const configs = await seedConfigs(configRepo);
+  console.log(` Configs: ${configs.length} registros\n`);
 
   await AppDataSource.destroy();
   console.log(' Seed completado exitosamente.');

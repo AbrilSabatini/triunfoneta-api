@@ -16,6 +16,8 @@ import { UsersModule } from './users/users.module';
 
 import { TradeOffer } from './album/entities/trade-offer.entity';
 import { Area } from './areas/entities/area.entity';
+import { ConfigsModule } from './configs/configs.module';
+import { Config } from './configs/entities/config.entity';
 import { MailQueue } from './mail/entities/mail-queue.entity';
 import { Pack } from './packs/entities/pack.entity';
 import { UserSticker } from './packs/entities/user-sticker.entity';
@@ -52,8 +54,9 @@ import { User } from './users/entities/user.entity';
         TriviaQuestion,
         TriviaOption,
         TriviaAttempt,
+        Config,
       ],
-      synchronize: process.env.NODE_ENV !== 'production',
+      synchronize: true,
       logging: process.env.NODE_ENV === 'development',
     }),
 
@@ -71,6 +74,7 @@ import { User } from './users/entities/user.entity';
     PacksModule,
     AlbumModule,
     TriviaModule,
+    ConfigsModule,
   ],
 })
 export class AppModule {}

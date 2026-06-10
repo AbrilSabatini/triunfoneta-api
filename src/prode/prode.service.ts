@@ -4,11 +4,12 @@ import {
   Logger,
   NotFoundException,
 } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
 
+import { ConfigsService } from '../configs/configs.service';
+import { ConfigType } from '../configs/entities/config.entity';
 import { PointReason } from '../points/entities/point-transaction.entity';
 import { PointsService } from '../points/points.service';
 import { User } from '../users/entities/user.entity';
@@ -39,7 +40,7 @@ export class ProdeService {
     private userRepo: Repository<User>,
 
     private pointsService: PointsService,
-    private config: ConfigService,
+    private configsService: ConfigsService,
     private dataSource: DataSource,
   ) {}
 
@@ -290,11 +291,11 @@ export class ProdeService {
         where: { matchId: id },
       });
 
-      const exactPoints = Number(
-        this.config.get<number>('PRODE_EXACT_POINTS', 10),
+      const exactPoints = await this.configsService.getNumber(
+        ConfigType.PRODE_EXACT_POINTS,
       );
-      const winnerPoints = Number(
-        this.config.get<number>('PRODE_WINNER_POINTS', 5),
+      const winnerPoints = await this.configsService.getNumber(
+        ConfigType.PRODE_WINNER_POINTS,
       );
 
       const actualWinner = this.getWinner(dto.scoreHome, dto.scoreAway);

@@ -10,6 +10,7 @@ import {
 export enum TriviaCategory {
   MUNDIAL = 'Mundialistas',
   FUTBOL = 'Fútbol', // películas y leyendas del fútbol
+  FIFA = 'FIFA',
   TRIUNFO = 'Triunfo Seguros',
   GERENTES = 'Gerentes de Triunfo',
   SEGUROS = 'Rubro: Seguros',

@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { MulterModule } from '@nestjs/platform-express';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { ConfigsModule } from '../configs/configs.module';
 import { PointsModule } from '../points/points.module';
 import { Sticker } from './entities/sticker.entity';
 import { User } from './entities/user.entity';
@@ -12,6 +13,7 @@ import { UsersService } from './users.service';
     TypeOrmModule.forFeature([User, Sticker]),
     MulterModule.register({ dest: './uploads' }),
     PointsModule,
+    ConfigsModule,
   ],
   controllers: [UsersController],
   providers: [UsersService],

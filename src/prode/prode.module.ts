@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { ConfigsModule } from '../configs/configs.module';
 import { PointsModule } from '../points/points.module';
 import { User } from '../users/entities/user.entity';
 import { Match } from './entities/match.entity';
@@ -8,7 +9,11 @@ import { ProdeController } from './prode.controller';
 import { ProdeService } from './prode.service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Match, ProdePick, User]), PointsModule],
+  imports: [
+    TypeOrmModule.forFeature([Match, ProdePick, User]),
+    PointsModule,
+    ConfigsModule,
+  ],
   controllers: [ProdeController],
   providers: [ProdeService],
   exports: [ProdeService],

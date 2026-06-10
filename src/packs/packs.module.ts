@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { ConfigsModule } from '../configs/configs.module';
 import { PointTransaction } from '../points/entities/point-transaction.entity';
 import { PointsModule } from '../points/points.module';
 import { Sticker } from '../users/entities/sticker.entity';
@@ -19,6 +20,7 @@ import { PacksService } from './packs.service';
       PointTransaction,
     ]),
     PointsModule,
+    ConfigsModule,
   ],
   controllers: [PacksController],
   providers: [PacksService],

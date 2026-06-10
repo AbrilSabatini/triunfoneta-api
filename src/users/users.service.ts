@@ -10,6 +10,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
 import { plainToInstance } from 'class-transformer';
 import { Repository } from 'typeorm';
+import { ConfigsService } from '../configs/configs.service';
+import { ConfigType } from '../configs/entities/config.entity';
 import { PointReason } from '../points/entities/point-transaction.entity';
 import { PointsService } from '../points/points.service';
 import {
@@ -24,10 +26,6 @@ import {
 import { Sticker, StickerRarity } from './entities/sticker.entity';
 import { User, UserRole } from './entities/user.entity';
 
-const STICKER_CREATION_POINTS = Number(
-  process.env.STICKER_CREATION_POINTS ?? 50,
-);
-
 @Injectable()
 export class UsersService {
   constructor(
@@ -38,6 +36,7 @@ export class UsersService {
     private stickersRepo: Repository<Sticker>,
 
     private pointsService: PointsService,
+    private configsService: ConfigsService,
   ) {}
 
   // ─── Búsqueda interna (usada por AuthService) ─────────────────────────────
@@ -111,7 +110,7 @@ export class UsersService {
       this.usersRepo.update(userId, { stickerCreated: true }),
       this.pointsService.award(
         userId,
-        STICKER_CREATION_POINTS,
+        await this.configsService.getNumber(ConfigType.STICKER_CREATION_POINTS),
         PointReason.STICKER_CREATED,
         saved.id,
       ),

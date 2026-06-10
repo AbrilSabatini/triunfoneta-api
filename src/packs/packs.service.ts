@@ -1,8 +1,9 @@
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
 
+import { ConfigsService } from '../configs/configs.service';
+import { ConfigType } from '../configs/entities/config.entity';
 import {
   PointReason,
   PointTransaction,
@@ -44,7 +45,7 @@ export class PacksService {
     private txRepo: Repository<PointTransaction>,
 
     private pointsService: PointsService,
-    private config: ConfigService,
+    private configsService: ConfigsService,
     private dataSource: DataSource,
   ) {}
 
@@ -61,12 +62,14 @@ export class PacksService {
    * 6. Verificar si se completó algún área y acreditar bonus (una sola vez por área).
    */
   async openPack(userId: number): Promise<OpenPackResult> {
-    const packCost = Number(this.config.get<number>('PACK_COST_POINTS', 150));
-    const stickersPerPack = Number(
-      this.config.get<number>('PACK_STICKERS_PER_PACK', 5),
+    const packCost = await this.configsService.getNumber(
+      ConfigType.PACK_COST_POINTS,
     );
-    const areaBonus = Number(
-      this.config.get<number>('AREA_COMPLETION_POINTS', 100),
+    const stickersPerPack = await this.configsService.getNumber(
+      ConfigType.PACK_STICKERS_PER_PACK,
+    );
+    const areaBonus = await this.configsService.getNumber(
+      ConfigType.AREA_COMPLETION_POINTS,
     );
 
     // Fail-fast: verificar saldo sin abrir transacción
@@ -317,7 +320,9 @@ export class PacksService {
     const all = await this.stickerRepo.find();
     if (all.length === 0) return [];
 
-    const legendChance = Number(this.config.get('PACK_LEGEND_CHANCE', 0.05));
+    const legendChance = await this.configsService.getNumber(
+      ConfigType.PACK_LEGEND_CHANCE,
+    );
 
     const pools = {
       [StickerRarity.LEGEND]: all.filter(

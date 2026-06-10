@@ -4,116 +4,15 @@ import { Area } from '../../areas/entities/area.entity';
 import { User, UserRole } from '../../users/entities/user.entity';
 
 // Contraseña fija para DEV. En producción cada usuario recibe la suya por email.
-const DEV_PASSWORD = 'Triunfo2025!';
+const DEV_PASSWORD = process.env.USER_ADMIN_PASSWORD || 'triunfo123';
 
 const SEED_USERS = [
   // ─── Admin ────────────────────────────────────────────────────────────────
   {
     email: 'admin@triunfo.com',
     fullName: 'Admin Triunfoneta',
-    areaName: 'Tecnología',
+    areaName: 'Innovación y proyectos',
     role: UserRole.ADMIN,
-  },
-  // ─── Empleados por área ───────────────────────────────────────────────────
-  {
-    email: 'pablo.garcia@triunfo.com',
-    fullName: 'Pablo García',
-    areaName: 'Comercial',
-  },
-  {
-    email: 'lucia.fernandez@triunfo.com',
-    fullName: 'Lucía Fernández',
-    areaName: 'Comercial',
-  },
-  {
-    email: 'martin.lopez@triunfo.com',
-    fullName: 'Martín López',
-    areaName: 'Estrategia',
-  },
-  {
-    email: 'ana.martinez@triunfo.com',
-    fullName: 'Ana Martínez',
-    areaName: 'Marketing',
-  },
-  {
-    email: 'sofia.rodriguez@triunfo.com',
-    fullName: 'Sofía Rodríguez',
-    areaName: 'Marketing',
-  },
-  {
-    email: 'diego.sanchez@triunfo.com',
-    fullName: 'Diego Sánchez',
-    areaName: 'Siniestros',
-  },
-  {
-    email: 'valeria.gomez@triunfo.com',
-    fullName: 'Valeria Gómez',
-    areaName: 'Siniestros',
-  },
-  {
-    email: 'nicolas.perez@triunfo.com',
-    fullName: 'Nicolás Pérez',
-    areaName: 'RRHH',
-  },
-  {
-    email: 'camila.diaz@triunfo.com',
-    fullName: 'Camila Díaz',
-    areaName: 'RRHH',
-  },
-  {
-    email: 'juan.torres@triunfo.com',
-    fullName: 'Juan Torres',
-    areaName: 'Tecnología',
-  },
-  {
-    email: 'florencia.ruiz@triunfo.com',
-    fullName: 'Florencia Ruiz',
-    areaName: 'Tecnología',
-  },
-  {
-    email: 'ignacio.vargas@triunfo.com',
-    fullName: 'Ignacio Vargas',
-    areaName: 'Finanzas',
-  },
-  {
-    email: 'natalia.molina@triunfo.com',
-    fullName: 'Natalia Molina',
-    areaName: 'Finanzas',
-  },
-  {
-    email: 'rodrigo.ortiz@triunfo.com',
-    fullName: 'Rodrigo Ortiz',
-    areaName: 'Legal',
-  },
-  {
-    email: 'mariela.silva@triunfo.com',
-    fullName: 'Mariela Silva',
-    areaName: 'Legal',
-  },
-  {
-    email: 'andres.herrera@triunfo.com',
-    fullName: 'Andrés Herrera',
-    areaName: 'Operaciones',
-  },
-  {
-    email: 'carolina.mora@triunfo.com',
-    fullName: 'Carolina Mora',
-    areaName: 'Operaciones',
-  },
-  {
-    email: 'matias.reyes@triunfo.com',
-    fullName: 'Matías Reyes',
-    areaName: 'Estrategia',
-  },
-  {
-    email: 'paola.castro@triunfo.com',
-    fullName: 'Paola Castro',
-    areaName: 'Otra',
-  },
-  {
-    email: 'emilio.rojas@triunfo.com',
-    fullName: 'Emilio Rojas',
-    areaName: 'Otra',
   },
 ];
 
@@ -161,7 +60,7 @@ export async function seedUsers(
           stickerCreated: false,
           points: 0,
         })
-        .orIgnore() // no falla si el email ya existe (race condition)
+        .orIgnore()
         .execute();
 
       user = await repo.findOne({ where: { email: data.email } });
@@ -175,8 +74,5 @@ export async function seedUsers(
     result.push(user as User);
   }
 
-  console.log(
-    `\n   Contraseña de desarrollo: "${DEV_PASSWORD}" (todos los usuarios)`,
-  );
   return result;
 }
