@@ -25,6 +25,10 @@ export enum MatchGroup {
   F = 'F',
   G = 'G',
   H = 'H',
+  I = 'I',
+  J = 'J',
+  K = 'K',
+  L = 'L',
   NONE = '-', // fases eliminatorias
 }
 

@@ -1,6 +1,6 @@
 import { TriviaCategory } from '../../../trivia/entities/trivia-question.entity';
 
-const GERENTES = [
+export const GERENTES = [
   {
     question: '¿Quién es el Gerente General?',
     category: TriviaCategory.GERENTES,

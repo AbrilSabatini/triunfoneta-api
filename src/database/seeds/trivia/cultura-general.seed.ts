@@ -1,0 +1,553 @@
+import { TriviaCategory } from '../../../trivia/entities/trivia-question.entity';
+
+export const CULTURA_GENERAL = [
+  {
+    question: '¿En qué país se encuentra el Coliseo Romano?',
+    category: TriviaCategory.CULTURA_GENERAL,
+    points: 10,
+    options: [
+      { text: 'España', isCorrect: false, order: 0 },
+      { text: 'Grecia', isCorrect: false, order: 1 },
+      { text: 'Italia', isCorrect: true, order: 2 },
+      { text: 'Francia', isCorrect: false, order: 3 },
+    ],
+  },
+  {
+    question: '¿Dónde se encuentra el Cristo Redentor?',
+    category: TriviaCategory.CULTURA_GENERAL,
+    points: 10,
+    options: [
+      { text: 'Perú', isCorrect: false, order: 0 },
+      { text: 'Brasil', isCorrect: true, order: 1 },
+      { text: 'México', isCorrect: false, order: 2 },
+      { text: 'Chile', isCorrect: false, order: 3 },
+    ],
+  },
+  {
+    question: '¿En qué país está Machu Picchu?',
+    category: TriviaCategory.CULTURA_GENERAL,
+    points: 10,
+    options: [
+      { text: 'Bolivia', isCorrect: false, order: 0 },
+      { text: 'Ecuador', isCorrect: false, order: 1 },
+      { text: 'Perú', isCorrect: true, order: 2 },
+      { text: 'Colombia', isCorrect: false, order: 3 },
+    ],
+  },
+  {
+    question: '¿Dónde se encuentra la Gran Muralla China?',
+    category: TriviaCategory.CULTURA_GENERAL,
+    points: 10,
+    options: [
+      { text: 'Japón', isCorrect: false, order: 0 },
+      { text: 'China', isCorrect: true, order: 1 },
+      { text: 'Corea', isCorrect: false, order: 2 },
+      { text: 'Mongolia', isCorrect: false, order: 3 },
+    ],
+  },
+  {
+    question: '¿Qué maravilla del mundo se encuentra en Jordania?',
+    category: TriviaCategory.CULTURA_GENERAL,
+    points: 10,
+    options: [
+      { text: 'Petra', isCorrect: true, order: 0 },
+      { text: 'Chichén Itzá', isCorrect: false, order: 1 },
+      { text: 'Taj Mahal', isCorrect: false, order: 2 },
+      { text: 'Coliseo', isCorrect: false, order: 3 },
+    ],
+  },
+  {
+    question: '¿En qué país está el Taj Mahal?',
+    category: TriviaCategory.CULTURA_GENERAL,
+    points: 10,
+    options: [
+      { text: 'Turquía', isCorrect: false, order: 0 },
+      { text: 'India', isCorrect: true, order: 1 },
+      { text: 'Pakistán', isCorrect: false, order: 2 },
+      { text: 'Egipto', isCorrect: false, order: 3 },
+    ],
+  },
+  {
+    question: '¿Dónde se encuentra Chichén Itzá?',
+    category: TriviaCategory.CULTURA_GENERAL,
+    points: 10,
+    options: [
+      { text: 'México', isCorrect: true, order: 0 },
+      { text: 'Guatemala', isCorrect: false, order: 1 },
+      { text: 'Perú', isCorrect: false, order: 2 },
+      { text: 'Colombia', isCorrect: false, order: 3 },
+    ],
+  },
+  {
+    question: '¿Cuál es la capital de Brasil?',
+    category: TriviaCategory.CULTURA_GENERAL,
+    points: 10,
+    options: [
+      { text: 'Río de Janeiro', isCorrect: false, order: 0 },
+      { text: 'Brasilia', isCorrect: true, order: 1 },
+      { text: 'San Pablo', isCorrect: false, order: 2 },
+      { text: 'Salvador', isCorrect: false, order: 3 },
+    ],
+  },
+  {
+    question: '¿Cuál es la capital de Francia?',
+    category: TriviaCategory.CULTURA_GENERAL,
+    points: 10,
+    options: [
+      { text: 'Lyon', isCorrect: false, order: 0 },
+      { text: 'Marsella', isCorrect: false, order: 1 },
+      { text: 'París', isCorrect: true, order: 2 },
+      { text: 'Niza', isCorrect: false, order: 3 },
+    ],
+  },
+  {
+    question: '¿Cuál es la capital de España?',
+    category: TriviaCategory.CULTURA_GENERAL,
+    points: 10,
+    options: [
+      { text: 'Barcelona', isCorrect: false, order: 0 },
+      { text: 'Valencia', isCorrect: false, order: 1 },
+      { text: 'Madrid', isCorrect: true, order: 2 },
+      { text: 'Sevilla', isCorrect: false, order: 3 },
+    ],
+  },
+  {
+    question: '¿Cuál es la capital de Italia?',
+    category: TriviaCategory.CULTURA_GENERAL,
+    points: 10,
+    options: [
+      { text: 'Milán', isCorrect: false, order: 0 },
+      { text: 'Roma', isCorrect: true, order: 1 },
+      { text: 'Venecia', isCorrect: false, order: 2 },
+      { text: 'Nápoles', isCorrect: false, order: 3 },
+    ],
+  },
+  {
+    question: '¿Cuál es la capital de Japón?',
+    category: TriviaCategory.CULTURA_GENERAL,
+    points: 10,
+    options: [
+      { text: 'Kioto', isCorrect: false, order: 0 },
+      { text: 'Osaka', isCorrect: false, order: 1 },
+      { text: 'Tokio', isCorrect: true, order: 2 },
+      { text: 'Nagasaki', isCorrect: false, order: 3 },
+    ],
+  },
+  {
+    question: '¿Cuál es la capital de Australia?',
+    category: TriviaCategory.CULTURA_GENERAL,
+    points: 10,
+    options: [
+      { text: 'Sídney', isCorrect: false, order: 0 },
+      { text: 'Melbourne', isCorrect: false, order: 1 },
+      { text: 'Canberra', isCorrect: true, order: 2 },
+      { text: 'Perth', isCorrect: false, order: 3 },
+    ],
+  },
+  {
+    question: '¿Cuál es la capital de Canadá?',
+    category: TriviaCategory.CULTURA_GENERAL,
+    points: 10,
+    options: [
+      { text: 'Toronto', isCorrect: false, order: 0 },
+      { text: 'Ottawa', isCorrect: true, order: 1 },
+      { text: 'Montreal', isCorrect: false, order: 2 },
+      { text: 'Vancouver', isCorrect: false, order: 3 },
+    ],
+  },
+  {
+    question: '¿Cuál es el país más grande del mundo?',
+    category: TriviaCategory.CULTURA_GENERAL,
+    points: 10,
+    options: [
+      { text: 'China', isCorrect: false, order: 0 },
+      { text: 'Estados Unidos', isCorrect: false, order: 1 },
+      { text: 'Rusia', isCorrect: true, order: 2 },
+      { text: 'Canadá', isCorrect: false, order: 3 },
+    ],
+  },
+  {
+    question: '¿Cuál es el país más poblado del mundo?',
+    category: TriviaCategory.CULTURA_GENERAL,
+    points: 10,
+    options: [
+      { text: 'India', isCorrect: true, order: 0 },
+      { text: 'China', isCorrect: false, order: 1 },
+      { text: 'Estados Unidos', isCorrect: false, order: 2 },
+      { text: 'Indonesia', isCorrect: false, order: 3 },
+    ],
+  },
+  {
+    question: '¿En qué continente se encuentra Egipto?',
+    category: TriviaCategory.CULTURA_GENERAL,
+    points: 10,
+    options: [
+      { text: 'Asia', isCorrect: false, order: 0 },
+      { text: 'Europa', isCorrect: false, order: 1 },
+      { text: 'África', isCorrect: true, order: 2 },
+      { text: 'Oceanía', isCorrect: false, order: 3 },
+    ],
+  },
+  {
+    question: '¿Cuál es el idioma oficial de Brasil?',
+    category: TriviaCategory.CULTURA_GENERAL,
+    points: 10,
+    options: [
+      { text: 'Español', isCorrect: false, order: 0 },
+      { text: 'Portugués', isCorrect: true, order: 1 },
+      { text: 'Inglés', isCorrect: false, order: 2 },
+      { text: 'Francés', isCorrect: false, order: 3 },
+    ],
+  },
+  {
+    question: '¿Qué país tiene forma de bota?',
+    category: TriviaCategory.CULTURA_GENERAL,
+    points: 10,
+    options: [
+      { text: 'Grecia', isCorrect: false, order: 0 },
+      { text: 'Italia', isCorrect: true, order: 1 },
+      { text: 'Croacia', isCorrect: false, order: 2 },
+      { text: 'Portugal', isCorrect: false, order: 3 },
+    ],
+  },
+  {
+    question: '¿Qué país tiene una hoja de arce en su bandera?',
+    category: TriviaCategory.CULTURA_GENERAL,
+    points: 10,
+    options: [
+      { text: 'Canadá', isCorrect: true, order: 0 },
+      { text: 'Australia', isCorrect: false, order: 1 },
+      { text: 'Estados Unidos', isCorrect: false, order: 2 },
+      { text: 'Irlanda', isCorrect: false, order: 3 },
+    ],
+  },
+  {
+    question: '¿Qué país tiene un sol en su bandera?',
+    category: TriviaCategory.CULTURA_GENERAL,
+    points: 10,
+    options: [
+      { text: 'Argentina', isCorrect: true, order: 0 },
+      { text: 'Francia', isCorrect: false, order: 1 },
+      { text: 'Italia', isCorrect: false, order: 2 },
+      { text: 'Alemania', isCorrect: false, order: 3 },
+    ],
+  },
+  {
+    question: '¿Cuántos continentes existen?',
+    category: TriviaCategory.CULTURA_GENERAL,
+    points: 10,
+    options: [
+      { text: '5', isCorrect: false, order: 0 },
+      { text: '6', isCorrect: false, order: 1 },
+      { text: '7', isCorrect: true, order: 2 },
+      { text: '8', isCorrect: false, order: 3 },
+    ],
+  },
+  {
+    question: '¿Cuál es el océano más grande?',
+    category: TriviaCategory.CULTURA_GENERAL,
+    points: 10,
+    options: [
+      { text: 'Atlántico', isCorrect: false, order: 0 },
+      { text: 'Índico', isCorrect: false, order: 1 },
+      { text: 'Pacífico', isCorrect: true, order: 2 },
+      { text: 'Ártico', isCorrect: false, order: 3 },
+    ],
+  },
+  {
+    question: '¿Cuál es el río más largo del mundo?',
+    category: TriviaCategory.CULTURA_GENERAL,
+    points: 10,
+    options: [
+      { text: 'Amazonas', isCorrect: true, order: 0 },
+      { text: 'Nilo', isCorrect: false, order: 1 },
+      { text: 'Paraná', isCorrect: false, order: 2 },
+      { text: 'Mississippi', isCorrect: false, order: 3 },
+    ],
+  },
+  {
+    question: '¿Cuál es la montaña más alta del planeta?',
+    category: TriviaCategory.CULTURA_GENERAL,
+    points: 10,
+    options: [
+      { text: 'Aconcagua', isCorrect: false, order: 0 },
+      { text: 'Everest', isCorrect: true, order: 1 },
+      { text: 'Kilimanjaro', isCorrect: false, order: 2 },
+      { text: 'Mont Blanc', isCorrect: false, order: 3 },
+    ],
+  },
+  {
+    question: '¿Cuál es el desierto más grande del mundo?',
+    category: TriviaCategory.CULTURA_GENERAL,
+    points: 10,
+    options: [
+      { text: 'Sahara', isCorrect: false, order: 0 },
+      { text: 'Antártida', isCorrect: true, order: 1 },
+      { text: 'Atacama', isCorrect: false, order: 2 },
+      { text: 'Gobi', isCorrect: false, order: 3 },
+    ],
+  },
+  {
+    question: '¿Cuál es la capital más austral del mundo?',
+    category: TriviaCategory.CULTURA_GENERAL,
+    points: 10,
+    options: [
+      { text: 'Buenos Aires', isCorrect: false, order: 0 },
+      { text: 'Wellington', isCorrect: true, order: 1 },
+      { text: 'Canberra', isCorrect: false, order: 2 },
+      { text: 'Santiago', isCorrect: false, order: 3 },
+    ],
+  },
+  {
+    question: '¿Qué país tiene más husos horarios?',
+    category: TriviaCategory.CULTURA_GENERAL,
+    points: 10,
+    options: [
+      { text: 'Rusia', isCorrect: false, order: 0 },
+      { text: 'Estados Unidos', isCorrect: false, order: 1 },
+      { text: 'Francia', isCorrect: true, order: 2 },
+      { text: 'China', isCorrect: false, order: 3 },
+    ],
+  },
+  {
+    question: '¿Cuál es el único continente sin desiertos?',
+    category: TriviaCategory.CULTURA_GENERAL,
+    points: 10,
+    options: [
+      { text: 'Europa', isCorrect: true, order: 0 },
+      { text: 'América', isCorrect: false, order: 1 },
+      { text: 'Asia', isCorrect: false, order: 2 },
+      { text: 'Oceanía', isCorrect: false, order: 3 },
+    ],
+  },
+  {
+    question: '¿Cuál es el país con más islas del mundo?',
+    category: TriviaCategory.CULTURA_GENERAL,
+    points: 10,
+    options: [
+      { text: 'Indonesia', isCorrect: false, order: 0 },
+      { text: 'Filipinas', isCorrect: false, order: 1 },
+      { text: 'Suecia', isCorrect: true, order: 2 },
+      { text: 'Japón', isCorrect: false, order: 3 },
+    ],
+  },
+  {
+    question:
+      '¿Qué maravilla del mundo fue construida por la civilización maya?',
+    category: TriviaCategory.CULTURA_GENERAL,
+    points: 10,
+    options: [
+      { text: 'Petra', isCorrect: false, order: 0 },
+      { text: 'Chichén Itzá', isCorrect: true, order: 1 },
+      { text: 'Coliseo', isCorrect: false, order: 2 },
+      { text: 'Machu Picchu', isCorrect: false, order: 3 },
+    ],
+  },
+  {
+    question: '¿Quién fue el líder sudafricano que luchó contra el apartheid?',
+    category: TriviaCategory.CULTURA_GENERAL,
+    points: 10,
+    options: [
+      { text: 'Mahatma Gandhi', isCorrect: false, order: 0 },
+      { text: 'Nelson Mandela', isCorrect: true, order: 1 },
+      { text: 'Winston Churchill', isCorrect: false, order: 2 },
+      { text: 'Martin Luther King', isCorrect: false, order: 3 },
+    ],
+  },
+  {
+    question: '¿Quién desarrolló la Teoría de la Relatividad?',
+    category: TriviaCategory.CULTURA_GENERAL,
+    points: 10,
+    options: [
+      { text: 'Isaac Newton', isCorrect: false, order: 0 },
+      { text: 'Albert Einstein', isCorrect: true, order: 1 },
+      { text: 'Galileo Galilei', isCorrect: false, order: 2 },
+      { text: 'Nikola Tesla', isCorrect: false, order: 3 },
+    ],
+  },
+  {
+    question: '¿Quién fue el primer hombre en pisar la Luna?',
+    category: TriviaCategory.CULTURA_GENERAL,
+    points: 10,
+    options: [
+      { text: 'Buzz Aldrin', isCorrect: false, order: 0 },
+      { text: 'Neil Armstrong', isCorrect: true, order: 1 },
+      { text: 'Yuri Gagarin', isCorrect: false, order: 2 },
+      { text: 'Michael Collins', isCorrect: false, order: 3 },
+    ],
+  },
+  {
+    question: '¿Quién pintó la Mona Lisa?',
+    category: TriviaCategory.CULTURA_GENERAL,
+    points: 10,
+    options: [
+      { text: 'Pablo Picasso', isCorrect: false, order: 0 },
+      { text: 'Leonardo da Vinci', isCorrect: true, order: 1 },
+      { text: 'Miguel Ángel', isCorrect: false, order: 2 },
+      { text: 'Van Gogh', isCorrect: false, order: 3 },
+    ],
+  },
+  {
+    question: '¿Quién fue conocido como el "Rey del Rock"?',
+    category: TriviaCategory.CULTURA_GENERAL,
+    points: 10,
+    options: [
+      { text: 'Freddie Mercury', isCorrect: false, order: 0 },
+      { text: 'Elvis Presley', isCorrect: true, order: 1 },
+      { text: 'Michael Jackson', isCorrect: false, order: 2 },
+      { text: 'John Lennon', isCorrect: false, order: 3 },
+    ],
+  },
+  {
+    question: '¿Quién escribió "Don Quijote de la Mancha"?',
+    category: TriviaCategory.CULTURA_GENERAL,
+    points: 10,
+    options: [
+      { text: 'Gabriel García Márquez', isCorrect: false, order: 0 },
+      { text: 'Miguel de Cervantes', isCorrect: true, order: 1 },
+      { text: 'Borges', isCorrect: false, order: 2 },
+      { text: 'Neruda', isCorrect: false, order: 3 },
+    ],
+  },
+  {
+    question: '¿Qué argentino ganó el Premio Nobel de la Paz en 1980?',
+    category: TriviaCategory.CULTURA_GENERAL,
+    points: 10,
+    options: [
+      { text: 'Eva Perón', isCorrect: false, order: 0 },
+      { text: 'Adolfo Pérez Esquivel', isCorrect: true, order: 1 },
+      { text: 'René Favaloro', isCorrect: false, order: 2 },
+      { text: 'Julio Cortázar', isCorrect: false, order: 3 },
+    ],
+  },
+  {
+    question: '¿En qué país se encuentran las Pirámides de Giza?',
+    category: TriviaCategory.CULTURA_GENERAL,
+    points: 10,
+    options: [
+      { text: 'México', isCorrect: false, order: 0 },
+      { text: 'Egipto', isCorrect: true, order: 1 },
+      { text: 'Perú', isCorrect: false, order: 2 },
+      { text: 'India', isCorrect: false, order: 3 },
+    ],
+  },
+  {
+    question: '¿Cuál es la pirámide más grande de Egipto?',
+    category: TriviaCategory.CULTURA_GENERAL,
+    points: 10,
+    options: [
+      { text: 'Micerino', isCorrect: false, order: 0 },
+      { text: 'Kefrén', isCorrect: false, order: 1 },
+      { text: 'Keops', isCorrect: true, order: 2 },
+      { text: 'Saqqara', isCorrect: false, order: 3 },
+    ],
+  },
+  {
+    question:
+      '¿Cuál es el idioma más hablado del mundo por cantidad de hablantes nativos?',
+    category: TriviaCategory.CULTURA_GENERAL,
+    points: 10,
+    options: [
+      { text: 'Inglés', isCorrect: false, order: 0 },
+      { text: 'Español', isCorrect: false, order: 1 },
+      { text: 'Chino Mandarín', isCorrect: true, order: 2 },
+      { text: 'Hindi', isCorrect: false, order: 3 },
+    ],
+  },
+  {
+    question:
+      '¿Qué personalidad recibió el Premio Nobel de la Paz y fue conocida como la Madre Teresa?',
+    category: TriviaCategory.CULTURA_GENERAL,
+    points: 10,
+    options: [
+      { text: 'Madre Teresa de Calcuta', isCorrect: true, order: 0 },
+      { text: 'Eva Perón', isCorrect: false, order: 1 },
+      { text: 'Indira Gandhi', isCorrect: false, order: 2 },
+      { text: 'Rigoberta Menchú', isCorrect: false, order: 3 },
+    ],
+  },
+  {
+    question:
+      '¿Cuál de estas civilizaciones construyó pirámides tanto en África como en América?',
+    category: TriviaCategory.CULTURA_GENERAL,
+    points: 10,
+    options: [
+      {
+        text: 'Ninguna, fueron civilizaciones distintas',
+        isCorrect: true,
+        order: 0,
+      },
+      { text: 'Romanos', isCorrect: false, order: 1 },
+      { text: 'Griegos', isCorrect: false, order: 2 },
+      { text: 'Fenicios', isCorrect: false, order: 3 },
+    ],
+  },
+  {
+    question:
+      '¿Qué país alberga la mayor cantidad de sitios declarados Patrimonio Mundial por UNESCO?',
+    category: TriviaCategory.CULTURA_GENERAL,
+    points: 10,
+    options: [
+      { text: 'Francia', isCorrect: false, order: 0 },
+      { text: 'Italia', isCorrect: true, order: 1 },
+      { text: 'China', isCorrect: false, order: 2 },
+      { text: 'España', isCorrect: false, order: 3 },
+    ],
+  },
+  {
+    question:
+      '¿Cuál de estas personalidades fue médico además de revolucionario?',
+    category: TriviaCategory.CULTURA_GENERAL,
+    points: 10,
+    options: [
+      { text: 'Simón Bolívar', isCorrect: false, order: 0 },
+      { text: 'José de San Martín', isCorrect: false, order: 1 },
+      { text: 'Ernesto "Che" Guevara', isCorrect: true, order: 2 },
+      { text: 'Winston Churchill', isCorrect: false, order: 3 },
+    ],
+  },
+  {
+    question: '¿Qué faraón fue hallado en una tumba casi intacta en 1922?',
+    category: TriviaCategory.CULTURA_GENERAL,
+    points: 10,
+    options: [
+      { text: 'Ramsés II', isCorrect: false, order: 0 },
+      { text: 'Keops', isCorrect: false, order: 1 },
+      { text: 'Tutankamón', isCorrect: true, order: 2 },
+      { text: 'Akhenatón', isCorrect: false, order: 3 },
+    ],
+  },
+  {
+    question: '¿En qué región se desarrolló la civilización maya?',
+    category: TriviaCategory.CULTURA_GENERAL,
+    points: 10,
+    options: [
+      { text: 'Sudamérica', isCorrect: false, order: 0 },
+      { text: 'Centroamérica', isCorrect: true, order: 1 },
+      { text: 'Europa', isCorrect: false, order: 2 },
+      { text: 'África', isCorrect: false, order: 3 },
+    ],
+  },
+  {
+    question: '¿Qué país alberga la famosa ciudad maya de Chichén Itzá?',
+    category: TriviaCategory.CULTURA_GENERAL,
+    points: 10,
+    options: [
+      { text: 'Perú', isCorrect: false, order: 0 },
+      { text: 'México', isCorrect: true, order: 1 },
+      { text: 'Guatemala', isCorrect: false, order: 2 },
+      { text: 'Honduras', isCorrect: false, order: 3 },
+    ],
+  },
+  {
+    question: '¿Cuál era la capital del Imperio Inca?',
+    category: TriviaCategory.CULTURA_GENERAL,
+    points: 10,
+    options: [
+      { text: 'Lima', isCorrect: false, order: 0 },
+      { text: 'Cusco', isCorrect: true, order: 1 },
+      { text: 'Arequipa', isCorrect: false, order: 2 },
+      { text: 'Quito', isCorrect: false, order: 3 },
+    ],
+  },
+];

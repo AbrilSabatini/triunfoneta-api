@@ -10,6 +10,7 @@ import { Config } from '../../configs/entities/config.entity';
 import { Match } from '../../prode/entities/match.entity';
 import { TriviaOption } from '../../trivia/entities/trivia-option.entity';
 import { TriviaQuestion } from '../../trivia/entities/trivia-question.entity';
+import { seedMatches } from '../matches.seed';
 import { seedAreas } from './areas.seed';
 import { seedConfigs } from './configs.seed';
 import { seedTrivia } from './trivia.seed';
@@ -46,6 +47,9 @@ async function run() {
 
   const configs = await seedConfigs(configRepo);
   console.log(` Configs: ${configs.length} registros\n`);
+
+  const matches = await seedMatches(matchRepo);
+  console.log(` Partidos: ${matches.length} registros\n`);
 
   await AppDataSource.destroy();
   console.log(' Seed completado exitosamente.');
