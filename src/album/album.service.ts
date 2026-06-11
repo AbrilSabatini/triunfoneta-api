@@ -10,6 +10,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
 
 import { UserSticker } from '../packs/entities/user-sticker.entity';
+import { getAlbumSections } from '../common/utils/album-progress.util';
 import { Sticker } from '../users/entities/sticker.entity';
 import { User } from '../users/entities/user.entity';
 import {
@@ -493,37 +494,7 @@ export class AlbumService {
   }
 
   private async getSections(userId: number): Promise<AlbumSection[]> {
-    const totals = await this.stickerRepo
-      .createQueryBuilder('s')
-      .select('s.area', 'area')
-      .addSelect('COUNT(*)', 'total')
-      .groupBy('s.area')
-      .orderBy('s.area', 'ASC')
-      .getRawMany();
-
-    const owned = await this.userStickerRepo
-      .createQueryBuilder('us')
-      .innerJoin('us.sticker', 's')
-      .select('s.area', 'area')
-      .addSelect('COUNT(DISTINCT us.stickerId)', 'owned')
-      .where('us.ownerId = :userId', { userId })
-      .groupBy('s.area')
-      .getRawMany();
-
-    const ownedMap = new Map(owned.map((r) => [r.area, Number(r.owned)]));
-
-    return totals.map((r) => {
-      const total = Number(r.total);
-      const have = ownedMap.get(r.area) ?? 0;
-      const percentage = total > 0 ? Math.round((have / total) * 100) : 0;
-      return {
-        area: r.area ?? 'General',
-        totalStickers: total,
-        ownedStickers: have,
-        percentage,
-        isComplete: have === total && total > 0,
-      };
-    });
+    return getAlbumSections(userId, this.stickerRepo, this.userStickerRepo);
   }
 
   /** Upsert de una figurita en la colección de un usuario */

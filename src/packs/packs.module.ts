@@ -5,6 +5,7 @@ import { PointTransaction } from '../points/entities/point-transaction.entity';
 import { PointsModule } from '../points/points.module';
 import { Sticker } from '../users/entities/sticker.entity';
 import { User } from '../users/entities/user.entity';
+import { AreaCompletion } from './entities/area-completion.entity';
 import { Pack } from './entities/pack.entity';
 import { UserSticker } from './entities/user-sticker.entity';
 import { PacksController } from './packs.controller';
@@ -18,6 +19,7 @@ import { PacksService } from './packs.service';
       Sticker,
       User,
       PointTransaction,
+      AreaCompletion,
     ]),
     PointsModule,
     ConfigsModule,

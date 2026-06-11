@@ -19,6 +19,7 @@ import { Area } from './areas/entities/area.entity';
 import { ConfigsModule } from './configs/configs.module';
 import { Config } from './configs/entities/config.entity';
 import { MailQueue } from './mail/entities/mail-queue.entity';
+import { AreaCompletion } from './packs/entities/area-completion.entity';
 import { Pack } from './packs/entities/pack.entity';
 import { UserSticker } from './packs/entities/user-sticker.entity';
 import { PointTransaction } from './points/entities/point-transaction.entity';
@@ -50,6 +51,7 @@ import { User } from './users/entities/user.entity';
         ProdePick,
         Pack,
         UserSticker,
+        AreaCompletion,
         TradeOffer,
         TriviaQuestion,
         TriviaOption,

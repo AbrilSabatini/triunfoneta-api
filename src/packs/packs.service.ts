@@ -1,21 +1,19 @@
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DataSource, Repository } from 'typeorm';
+import { DataSource, In, Repository } from 'typeorm';
 
+import { getAlbumSections } from '../common/utils/album-progress.util';
 import { ConfigsService } from '../configs/configs.service';
 import { ConfigType } from '../configs/entities/config.entity';
-import {
-  PointReason,
-  PointTransaction,
-} from '../points/entities/point-transaction.entity';
+import { PointReason } from '../points/entities/point-transaction.entity';
 import { PointsService } from '../points/points.service';
 import { Sticker, StickerRarity } from '../users/entities/sticker.entity';
 import { User } from '../users/entities/user.entity';
 import { QueryCollectionDto, QueryPackHistoryDto } from './dto/packs.dto';
+import { AreaCompletion } from './entities/area-completion.entity';
 import { Pack } from './entities/pack.entity';
 import { UserSticker } from './entities/user-sticker.entity';
 
-// Resultado de abrir un sobre
 export interface OpenPackResult {
   pack: Pack;
   stickers: Sticker[];
@@ -41,26 +39,14 @@ export class PacksService {
     @InjectRepository(User)
     private userRepo: Repository<User>,
 
-    @InjectRepository(PointTransaction)
-    private txRepo: Repository<PointTransaction>,
+    @InjectRepository(AreaCompletion)
+    private areaCompletionRepo: Repository<AreaCompletion>,
 
     private pointsService: PointsService,
     private configsService: ConfigsService,
     private dataSource: DataSource,
   ) {}
 
-  // ─── Abrir sobre ──────────────────────────────────────────────────────────
-
-  /**
-   * Flujo completo dentro de una sola transacción de DB:
-   *
-   * 1. Verificar saldo (fail-fast antes de la tx).
-   * 2. Sortear figuritas con distribución por área.
-   * 3. spend() → descuenta puntos atómicamente.
-   * 4. Upsert en user_stickers (nueva → INSERT, repetida → quantity++).
-   * 5. Registrar apertura en packs.
-   * 6. Verificar si se completó algún área y acreditar bonus (una sola vez por área).
-   */
   async openPack(userId: number): Promise<OpenPackResult> {
     const packCost = await this.configsService.getNumber(
       ConfigType.PACK_COST_POINTS,
@@ -72,7 +58,6 @@ export class PacksService {
       ConfigType.AREA_COMPLETION_POINTS,
     );
 
-    // Fail-fast: verificar saldo sin abrir transacción
     const user = await this.userRepo.findOneOrFail({ where: { id: userId } });
     if (user.points < packCost) {
       throw new BadRequestException(
@@ -80,7 +65,6 @@ export class PacksService {
       );
     }
 
-    // Sortear fuera de la tx (no bloquea filas innecesariamente)
     const drawn = await this.drawStickers(stickersPerPack);
     if (drawn.length === 0) {
       throw new BadRequestException(
@@ -90,38 +74,18 @@ export class PacksService {
     }
 
     return this.dataSource.transaction(async (manager) => {
-      // 3. Descontar puntos (lanza BadRequestException si no alcanza)
       await this.pointsService.spend(
         userId,
         packCost,
         PointReason.PACK_PURCHASE,
+        undefined,
+        manager,
       );
 
-      // 4. Upsert de cada figurita en la colección
-      let newStickers = 0;
-      let duplicates = 0;
+      const { newStickers, duplicates } = await this.batchUpsertStickers(
+        manager, userId, drawn,
+      );
 
-      for (const sticker of drawn) {
-        const existing = await manager.findOne(UserSticker, {
-          where: { ownerId: userId, stickerId: sticker.id },
-        });
-        if (existing) {
-          existing.quantity++;
-          await manager.save(UserSticker, existing);
-          duplicates++;
-        } else {
-          await manager.save(
-            UserSticker,
-            manager.create(UserSticker, {
-              ownerId: userId,
-              stickerId: sticker.id,
-            }),
-          );
-          newStickers++;
-        }
-      }
-
-      // 5. Registrar apertura
       const pack = await manager.save(
         Pack,
         manager.create(Pack, {
@@ -131,7 +95,6 @@ export class PacksService {
         }),
       );
 
-      // 6. Verificar completitud de áreas y acreditar bonus
       const areaCompletionBonus = await this.checkAreaCompletions(
         userId,
         manager,
@@ -179,10 +142,6 @@ export class PacksService {
     return { data, total };
   }
 
-  /**
-   * Vista del álbum: para cada área muestra cuántas figuritas existen en el
-   * sistema y cuántas tiene el usuario, con % de completitud.
-   */
   async getAlbumProgress(userId: number): Promise<
     Array<{
       area: string;
@@ -192,39 +151,7 @@ export class PacksService {
       isComplete: boolean;
     }>
   > {
-    const totals = await this.stickerRepo
-      .createQueryBuilder('s')
-      .select('s.area', 'area')
-      .addSelect('COUNT(*)', 'total')
-      .groupBy('s.area')
-      .orderBy('s.area', 'ASC')
-      .getRawMany();
-
-    const owned = await this.userStickerRepo
-      .createQueryBuilder('us')
-      .innerJoin('us.sticker', 's')
-      .select('s.area', 'area')
-      .addSelect('COUNT(DISTINCT us.stickerId)', 'owned')
-      .where('us.ownerId = :userId', { userId })
-      .groupBy('s.area')
-      .getRawMany();
-
-    const ownedMap = new Map<string, number>(
-      owned.map((r) => [r.area, Number(r.owned)]),
-    );
-
-    return totals.map((r) => {
-      const total = Number(r.total);
-      const have = ownedMap.get(r.area) ?? 0;
-      const percentage = total > 0 ? Math.round((have / total) * 100) : 0;
-      return {
-        area: r.area,
-        totalStickers: total,
-        ownedStickers: have,
-        percentage,
-        isComplete: have === total && total > 0,
-      };
-    });
+    return getAlbumSections(userId, this.stickerRepo, this.userStickerRepo);
   }
 
   async getDuplicates(userId: number): Promise<UserSticker[]> {
@@ -305,83 +232,110 @@ export class PacksService {
   /**
    * Sortea N figuritas con probabilidad ponderada por rareza.
    *
-   * Probabilidades configurables por env:
-   *   PACK_LEGEND_CHANCE  (default: 0.05 → 5%  por slot)
-   *   PACK_RARE_CHANCE    (default: 0.15 → 15% por slot)
-   *   Resto → COMMON
+   * Optimización: carga solo IDs por rareza (2 queries livianas),
+   * hace el shuffle en memoria sobre los arrays de IDs, y finalmente
+   * carga solo las figuritas seleccionadas (1 query).
    *
-   * Algoritmo:
-   * 1. Separar stickers por rareza.
-   * 2. Por cada slot, tirar el dado y elegir del pool correspondiente.
-   * 3. Si el pool de esa rareza está vacío, usar COMMON como fallback.
-   * 4. Sin límite por área — la variedad surge de la aleatoriedad.
+   * Antes: cargaba TODAS las figuritas completas en memoria con find().
    */
   private async drawStickers(count: number): Promise<Sticker[]> {
-    const all = await this.stickerRepo.find();
-    if (all.length === 0) return [];
-
     const legendChance = await this.configsService.getNumber(
       ConfigType.PACK_LEGEND_CHANCE,
     );
 
-    const pools = {
-      [StickerRarity.LEGEND]: all.filter(
-        (s) => s.rarity === StickerRarity.LEGEND,
-      ),
-      [StickerRarity.COMMON]: all.filter(
-        (s) => s.rarity === StickerRarity.COMMON,
-      ),
-    };
+    const [legendIds, commonIds] = await Promise.all([
+      this.stickerRepo
+        .find({ where: { rarity: StickerRarity.LEGEND }, select: ['id'] })
+        .then((rows) => rows.map((s) => s.id)),
+      this.stickerRepo
+        .find({ where: { rarity: StickerRarity.COMMON }, select: ['id'] })
+        .then((rows) => rows.map((s) => s.id)),
+    ]);
 
-    // Fisher-Yates en cada pool
-    const shuffle = (arr: Sticker[]) => {
-      for (let i = arr.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [arr[i], arr[j]] = [arr[j], arr[i]];
-      }
-      return arr;
-    };
-    Object.values(pools).forEach(shuffle);
+    if (legendIds.length === 0 && commonIds.length === 0) return [];
 
-    const drawn: Sticker[] = [];
-    const usedIds = new Set<number>();
+    this.shuffleArray(legendIds);
+    this.shuffleArray(commonIds);
 
-    const pickFrom = (rarity: string): Sticker | null => {
-      const pool = pools[rarity] ?? [];
-      const available = pool.filter((s) => !usedIds.has(s.id));
-      return available.length > 0 ? available[0] : null;
-    };
+    const drawnIds: number[] = [];
+    let lIdx = 0;
+    let cIdx = 0;
 
     for (let i = 0; i < count; i++) {
       const roll = Math.random();
-      let sticker: Sticker | null = null;
+      let selectedId: number | null = null;
 
-      if (roll < legendChance) {
-        sticker =
-          pickFrom(StickerRarity.LEGEND) ?? pickFrom(StickerRarity.COMMON);
-      } else {
-        sticker =
-          pickFrom(StickerRarity.COMMON) ?? pickFrom(StickerRarity.LEGEND);
+      if (roll < legendChance && lIdx < legendIds.length) {
+        selectedId = legendIds[lIdx++];
+      } else if (cIdx < commonIds.length) {
+        selectedId = commonIds[cIdx++];
+      } else if (lIdx < legendIds.length) {
+        selectedId = legendIds[lIdx++];
       }
 
-      if (sticker) {
-        drawn.push(sticker);
-        usedIds.add(sticker.id);
+      if (selectedId !== null) {
+        drawnIds.push(selectedId);
       }
     }
 
-    return drawn;
+    if (drawnIds.length === 0) return [];
+
+    return this.stickerRepo.findBy({ id: In(drawnIds) });
+  }
+
+  private shuffleArray<T>(arr: T[]): void {
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
   }
 
   /**
-   * Verifica si el usuario completó áreas nuevas con las figuritas recién obtenidas.
-   * Usa point_transactions como fuente de verdad para evitar acreditar el bonus
-   * dos veces: si ya existe una tx con reason=AREA_COMPLETED y el nombre del área
-   * en el campo `lastError` (reutilizado como metadata), no vuelve a acreditar.
-   *
-   * NOTA DE DISEÑO: en una siguiente iteración conviene añadir una tabla
-   * `area_completions(userId, areaName, completedAt)` para no reutilizar `lastError`.
-   * Por ahora esta solución es funcional y no rompe nada existente.
+   * Batch upsert de figuritas: reemplaza el loop N+1 anterior con
+   * 1 query de búsqueda + 1 batch save.
+   */
+  private async batchUpsertStickers(
+    manager: any,
+    userId: number,
+    drawn: Sticker[],
+  ): Promise<{ newStickers: number; duplicates: number }> {
+    const stickerIds = drawn.map((s) => s.id);
+    const existing: UserSticker[] = await manager.find(UserSticker, {
+      where: { ownerId: userId, stickerId: In(stickerIds) },
+    });
+    const existingMap = new Map(existing.map((e) => [e.stickerId, e]));
+
+    let newStickers = 0;
+    let duplicates = 0;
+    const toSave: UserSticker[] = [];
+
+    for (const sticker of drawn) {
+      const record = existingMap.get(sticker.id);
+      if (record) {
+        record.quantity++;
+        toSave.push(record);
+        duplicates++;
+      } else {
+        toSave.push(
+          manager.create(UserSticker, {
+            ownerId: userId,
+            stickerId: sticker.id,
+          }),
+        );
+        newStickers++;
+      }
+    }
+
+    if (toSave.length > 0) {
+      await manager.save(UserSticker, toSave);
+    }
+
+    return { newStickers, duplicates };
+  }
+
+  /**
+   * Verifica áreas completadas usando la tabla area_completions.
+   * Reemplaza el hack de CRC-16 en referenceId de PointTransaction.
    */
   private async checkAreaCompletions(
     userId: number,
@@ -389,27 +343,40 @@ export class PacksService {
     bonusPoints: number,
   ): Promise<Array<{ area: string; points: number }>> {
     const bonuses: Array<{ area: string; points: number }> = [];
-    const progress = await this.getAlbumProgress(userId);
+    const progress = await getAlbumSections(
+      userId,
+      this.stickerRepo,
+      this.userStickerRepo,
+    );
 
-    for (const { area, isComplete } of progress) {
-      if (!isComplete) continue;
+    const completedAreas = progress
+      .filter((s) => s.isComplete)
+      .map((s) => s.area);
 
-      // Verificar si ya se acreditó el bonus para esta área
-      const alreadyBonused = await this.txRepo
-        .createQueryBuilder('tx')
-        .where('tx.userId = :userId', { userId })
-        .andWhere('tx.reason = :reason', { reason: PointReason.AREA_COMPLETED })
-        // Guardamos el nombre del área en referenceId hasheado a entero (CRC simple)
-        .andWhere('tx.referenceId = :ref', { ref: this.areaToRef(area) })
-        .getCount();
+    if (completedAreas.length === 0) return bonuses;
 
-      if (alreadyBonused > 0) continue;
+    const alreadyBonused = await manager
+      .createQueryBuilder()
+      .select('ac.areaName')
+      .from(AreaCompletion, 'ac')
+      .where('ac.userId = :userId', { userId })
+      .andWhere('ac.areaName IN (:...areas)', { areas: completedAreas })
+      .getRawMany()
+      .then((rows) => new Set(rows.map((r) => r.ac_areaName)));
+
+    for (const area of completedAreas) {
+      if (alreadyBonused.has(area)) continue;
 
       await this.pointsService.award(
         userId,
         bonusPoints,
         PointReason.AREA_COMPLETED,
-        this.areaToRef(area),
+        undefined,
+        manager,
+      );
+      await manager.save(
+        AreaCompletion,
+        manager.create(AreaCompletion, { userId, areaName: area }),
       );
       bonuses.push({ area, points: bonusPoints });
       this.logger.log(
@@ -418,20 +385,5 @@ export class PacksService {
     }
 
     return bonuses;
-  }
-
-  /**
-   * Convierte el nombre del área en un entero positivo reproducible (CRC-16 simple).
-   * Usado como referenceId en PointTransaction para identificar de qué área es el bonus.
-   */
-  private areaToRef(area: string): number {
-    let crc = 0xffff;
-    for (let i = 0; i < area.length; i++) {
-      crc ^= area.charCodeAt(i) << 8;
-      for (let j = 0; j < 8; j++) {
-        crc = crc & 0x8000 ? (crc << 1) ^ 0x1021 : crc << 1;
-      }
-    }
-    return crc & 0xffff;
   }
 }
