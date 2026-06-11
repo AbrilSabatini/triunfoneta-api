@@ -17,6 +17,7 @@ import { PointsService } from '../points/points.service';
 import {
   ChangePasswordDto,
   CreateStickerDto,
+  PublicUserListItemDto,
   QueryUsersDto,
   UpdateStickerDto,
   UpdateUserAdminDto,
@@ -38,6 +39,56 @@ export class UsersService {
     private pointsService: PointsService,
     private configsService: ConfigsService,
   ) {}
+
+  async listPublicUsers(
+    search?: string,
+    areaId?: number,
+    page = 1,
+    limit = 20,
+  ): Promise<{ data: PublicUserListItemDto[]; total: number }> {
+    const qb = this.usersRepo
+      .createQueryBuilder('user')
+      .leftJoinAndSelect('user.area', 'area')
+      .where('user.role = :role', { role: UserRole.USER })
+      .andWhere('user.isActive = true');
+
+    if (search)
+      qb.andWhere('user.fullName ILIKE :search', { search: `%${search}%` });
+    if (areaId) qb.andWhere('user.areaId = :areaId', { areaId });
+
+    const [users, total] = await qb
+      .orderBy('user.fullName', 'ASC')
+      .skip((page - 1) * limit)
+      .take(limit)
+      .getManyAndCount();
+
+    // Cargar stickers por separado (evita JOIN con DISTINCT que rompe paginación)
+    const userIds = users.map((u) => u.id);
+    const stickers = userIds.length
+      ? await this.stickersRepo.find({
+          where: userIds.map((id) => ({ userId: id })),
+          select: ['userId', 'stickerNumber', 'rarity'],
+        })
+      : [];
+    const stickerMap = new Map(stickers.map((s) => [s.userId, s]));
+
+    // Construir objetos planos y transformar con el DTO
+    const rawList = users.map((u) => {
+      const sticker = stickerMap.get(u.id);
+      return {
+        id: u.id,
+        fullName: u.fullName,
+        avatarUrl: u.avatarUrl ?? null,
+        area: u.area ? { id: u.area.id, name: u.area.name } : null,
+      };
+    });
+
+    const data = plainToInstance(PublicUserListItemDto, rawList, {
+      excludeExtraneousValues: true,
+    });
+
+    return { data, total };
+  }
 
   // ─── Búsqueda interna (usada por AuthService) ─────────────────────────────
 

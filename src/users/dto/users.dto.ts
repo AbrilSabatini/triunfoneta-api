@@ -259,3 +259,23 @@ export class ChangePasswordDto {
   })
   newPassword: string;
 }
+
+@Exclude()
+export class PublicUserListItemDto {
+  @Expose()
+  @ApiProperty({ example: 3, description: 'ID numérico del usuario' })
+  id: number;
+
+  @Expose()
+  @ApiProperty({ example: 'Pablo García' })
+  fullName: string;
+
+  @Expose()
+  @ApiPropertyOptional({ example: '/uploads/avatars/abc.jpg', nullable: true })
+  avatarUrl: string | null;
+
+  @Expose()
+  @Type(() => AreaSummaryDto)
+  @ApiPropertyOptional({ type: () => AreaSummaryDto, nullable: true })
+  area: AreaSummaryDto | null;
+}
