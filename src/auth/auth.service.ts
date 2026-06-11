@@ -12,7 +12,6 @@ import * as bcrypt from 'bcrypt';
 import 'reflect-metadata';
 import { In, Repository } from 'typeorm';
 
-import { AreasService } from '../areas/areas.service';
 import { generateTemporaryPassword } from '../common/utils/password.util';
 import { MailService } from '../mail/mail.service';
 import {
@@ -21,6 +20,7 @@ import {
   RegisterDto,
   ResetPasswordDto,
 } from '../users/dto/users.dto';
+import { Sticker } from '../users/entities/sticker.entity';
 import { User, UserRole } from '../users/entities/user.entity';
 import { UsersService } from '../users/users.service';
 
@@ -33,7 +33,9 @@ export interface RegisterResult {
 
 export interface BulkRegisterResult {
   /** Usuarios nuevos persistidos en DB */
-  created: number;
+  usersCreated: number;
+  /** Figuritas nuevas creadas en DB */
+  stickersCreated: number;
   /** Emails que ya existían en DB y fueron omitidos */
   skipped: number;
   /** Emails enviados con éxito en este request */
@@ -53,8 +55,6 @@ export class AuthService {
   constructor(
     @InjectRepository(User)
     private usersRepo: Repository<User>,
-
-    private areasService: AreasService,
     private usersService: UsersService,
     private jwtService: JwtService,
     private mailService: MailService,
@@ -77,13 +77,10 @@ export class AuthService {
 
     // Los usuarios leyenda (gerentes) usan la contraseña predefinida por env
     const isLegend = dto.isLegend ?? false;
-    const password = isLegend
-      ? (this.config.get<string>('LEGEND_PASSWORD') ?? 'Leyenda2026!')
-      : dto.password;
 
     const user = this.usersRepo.create({
       email: dto.email,
-      password,
+      password: dto.password,
       fullName: dto.fullName,
       areaId: dto.areaId,
       role: UserRole.USER,
@@ -105,17 +102,14 @@ export class AuthService {
         ),
       );
 
-    // Si el usuario es leyenda: crear su sticker automáticamente
-    if (saved.isLegend) {
-      await this.usersService.createSticker(
-        saved.id,
-        {
-          nickname: saved.fullName.split(' ')[0],
-          useAvatar: true,
-        },
-        true, // internal = true → omite el check de stickerCreated
-      );
-    }
+    await this.usersService.createSticker(
+      saved.id,
+      {
+        nickname: null,
+        useAvatar: true,
+      },
+      true, // internal = true → omite el check de stickerCreated
+    );
 
     const { password: _, ...safeUser } = saved as any;
     return { accessToken: this.signToken(saved), user: safeUser };
@@ -164,23 +158,14 @@ export class AuthService {
     if (toCreate.length === 0) {
       this.logger.warn('[BULK] Todos los emails ya estaban registrados.');
       return {
-        created: 0,
+        usersCreated: 0,
+        stickersCreated: 0,
         skipped: skippedEmails.length,
         emailsSent: 0,
         emailsQueued: 0,
         skippedEmails,
       };
     }
-
-    // 3 ── Generar plain + hash en un solo paso por usuario ────────────────
-    //
-    // IMPORTANTE: plain y hash se generan juntos en el mismo objeto
-    // para garantizar que corresponden al mismo valor.
-    // Si se generan en pasos separados (como ocurría antes), hay riesgo de
-    // que el hash no corresponda al plain que se envía por email.
-    //
-    const legendPassword =
-      this.config.get<string>('LEGEND_PASSWORD') ?? 'Leyenda2026!';
 
     // 3 ── Generar contraseña por usuario ──────────────────────────────────
     //
@@ -189,16 +174,12 @@ export class AuthService {
     //
     const prepared = await Promise.all(
       toCreate.map(async (u) => {
-        const isLegend = (u as any).isLegend ?? false;
-        const plainPassword = isLegend
-          ? legendPassword
-          : generateTemporaryPassword();
+        const plainPassword = generateTemporaryPassword();
         return {
           user: u,
-          isLegend,
+          isLegend: (u as any).isLegend ?? false,
           plainPassword,
           hashedPassword: await bcrypt.hash(plainPassword, 10),
-          sendEmail: !isLegend,
         };
       }),
     );
@@ -230,27 +211,27 @@ export class AuthService {
     });
     this.logger.log(`[BULK] ${created.length} usuarios creados.`);
 
-    // 5a ── Auto-crear sticker para leyendas ───────────────────────────────
-    const legends = created.filter((u) => u.isLegend);
-    for (const legend of legends) {
-      await this.usersService.createSticker(
-        legend.id,
-        { nickname: legend.fullName, useAvatar: true },
-        true,
-      );
-      this.logger.log(
-        `[BULK] Sticker auto-creado para leyenda userId=${legend.id}`,
+    // 5a ── Auto-crear sticker ───────────────────────────────
+    const sticker: Sticker[] = [];
+    for (const user of created) {
+      sticker.push(
+        await this.usersService.createSticker(
+          user,
+          { nickname: null, useAvatar: true },
+          true,
+        ),
       );
     }
 
+    this.logger.log(`[BULK] ${sticker.length} stickers creados.`);
+
     // 5b ── Encolar emails solo para no-leyendas ───────────────────────────
-    const emailTargets = prepared.filter((p) => p.sendEmail);
     let emailsSent = 0,
       emailsQueued = 0;
 
-    if (emailTargets.length > 0) {
+    if (prepared.length > 0) {
       const result = await this.mailService.enqueueWelcomeBatch(
-        emailTargets.map(({ user: u, plainPassword }) => ({
+        prepared.map(({ user: u, plainPassword }) => ({
           fullName: u.fullName,
           email: u.email,
           temporaryPassword: plainPassword,
@@ -261,7 +242,8 @@ export class AuthService {
     }
 
     return {
-      created: created.length,
+      usersCreated: created.length,
+      stickersCreated: sticker.length,
       skipped: skippedEmails.length,
       emailsSent,
       emailsQueued,
@@ -278,7 +260,9 @@ export class AuthService {
     const user = await this.usersService.findByEmail(dto.email);
 
     if (!user || !user.isActive) {
-      throw new NotFoundException('No se encontró una cuenta activa con ese email');
+      throw new NotFoundException(
+        'No se encontró una cuenta activa con ese email',
+      );
     }
 
     const plainPassword = generateTemporaryPassword();

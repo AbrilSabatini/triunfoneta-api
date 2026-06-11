@@ -127,11 +127,11 @@ export class UsersService {
   // ─── Figurita propia ──────────────────────────────────────────────────────
 
   async createSticker(
-    userId: number,
+    userId: number | User,
     dto: CreateStickerDto,
     internal = false,
   ): Promise<Sticker> {
-    const user = await this.findById(userId);
+    const user = userId instanceof User ? userId : await this.findById(userId);
 
     if (user.stickerCreated) {
       throw new ConflictException(
@@ -158,9 +158,9 @@ export class UsersService {
 
     // Marcar usuario y sumar puntos en paralelo
     await Promise.all([
-      this.usersRepo.update(userId, { stickerCreated: true }),
+      this.usersRepo.update(user.id, { stickerCreated: true }),
       this.pointsService.award(
-        userId,
+        user.id,
         await this.configsService.getNumber(ConfigType.STICKER_CREATION_POINTS),
         PointReason.STICKER_CREATED,
         saved.id,

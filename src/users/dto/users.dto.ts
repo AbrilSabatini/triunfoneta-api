@@ -180,10 +180,10 @@ export class UpdateUserDto {
 
 export class CreateStickerDto {
   @ApiProperty({ example: 'Anita', maxLength: 30 })
+  @IsOptional()
   @IsString()
-  @IsNotEmpty()
   @MaxLength(30)
-  nickname: string;
+  nickname: string | null;
 
   @ApiPropertyOptional({ default: false })
   @IsOptional()

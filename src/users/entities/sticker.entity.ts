@@ -28,8 +28,8 @@ export class Sticker {
   userId: number;
 
   // Nombre visible en la figurita (puede diferir del nombre real)
-  @Column()
-  nickname: string;
+  @Column({ nullable: true, type: 'varchar' })
+  nickname: string | null;
 
   // URL de la foto de perfil en la figurita
   @Column({ nullable: true })
