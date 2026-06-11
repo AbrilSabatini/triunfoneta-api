@@ -73,7 +73,7 @@ export function welcomeTemplate(data: WelcomeEmailData): string {
       </div>
 
       <div class="cta">
-        <a href="${appUrl}/login">Ingresar a Triunfoneta</a>
+        <a href="${appUrl}">Ingresar a Triunfoneta</a>
       </div>
     </div>
     <div class="footer">
