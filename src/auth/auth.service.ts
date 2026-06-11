@@ -2,6 +2,7 @@ import {
   ConflictException,
   Injectable,
   Logger,
+  NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
@@ -14,7 +15,12 @@ import { In, Repository } from 'typeorm';
 import { AreasService } from '../areas/areas.service';
 import { generateTemporaryPassword } from '../common/utils/password.util';
 import { MailService } from '../mail/mail.service';
-import { BulkRegisterDto, LoginDto, RegisterDto } from '../users/dto/users.dto';
+import {
+  BulkRegisterDto,
+  LoginDto,
+  RegisterDto,
+  ResetPasswordDto,
+} from '../users/dto/users.dto';
 import { User, UserRole } from '../users/entities/user.entity';
 import { UsersService } from '../users/users.service';
 
@@ -261,6 +267,36 @@ export class AuthService {
       emailsQueued,
       skippedEmails,
     };
+  }
+
+  // ─── Reset password ─────────────────────────────────────────────────────────
+
+  /**
+   * Genera una nueva contraseña temporal, la persiste y la envía por email.
+   */
+  async resetPassword(dto: ResetPasswordDto): Promise<void> {
+    const user = await this.usersService.findByEmail(dto.email);
+
+    if (!user || !user.isActive) {
+      throw new NotFoundException('No se encontró una cuenta activa con ese email');
+    }
+
+    const plainPassword = generateTemporaryPassword();
+    const hashed = await bcrypt.hash(plainPassword, 10);
+
+    await this.usersRepo.update(user.id, { password: hashed });
+
+    this.mailService
+      .enqueueResetPassword({
+        fullName: user.fullName,
+        email: user.email,
+        temporaryPassword: plainPassword,
+      })
+      .catch((err) =>
+        this.logger.error(
+          `[AUTH] Error encolando reset de contraseña para ${user.email}: ${err.message}`,
+        ),
+      );
   }
 
   // ─── Login ────────────────────────────────────────────────────────────────

@@ -244,6 +244,14 @@ export class QueryUsersDto {
   limit?: number;
 }
 
+// ─── Password reset ───────────────────────────────────────────────────────────
+
+export class ResetPasswordDto {
+  @ApiProperty({ example: 'ana@triunfo.com' })
+  @IsEmail({}, { message: 'El email no es válido' })
+  email: string;
+}
+
 // ─── Password change ──────────────────────────────────────────────────────────
 
 export class ChangePasswordDto {

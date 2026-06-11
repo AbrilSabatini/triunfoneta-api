@@ -16,6 +16,7 @@ export enum MailStatus {
 
 export enum MailType {
   WELCOME = 'welcome',
+  RESET_PASSWORD = 'reset_password',
 }
 
 @Entity('mail_queue')

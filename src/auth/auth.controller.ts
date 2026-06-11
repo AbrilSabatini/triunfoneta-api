@@ -18,7 +18,12 @@ import { Roles } from '../common/decorators/roles.decorator';
 import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
 import { RolesGuard } from '../common/guards/roles.guard';
 import { Throttle, ThrottleGuard } from '../common/guards/throttle.guard';
-import { BulkRegisterDto, LoginDto, RegisterDto } from '../users/dto/users.dto';
+import {
+  BulkRegisterDto,
+  LoginDto,
+  RegisterDto,
+  ResetPasswordDto,
+} from '../users/dto/users.dto';
 import { UserRole } from '../users/entities/user.entity';
 import { UsersService } from '../users/users.service';
 import { AuthService } from './auth.service';
@@ -84,6 +89,26 @@ export class AuthController {
   @ApiResponse({ status: 429, description: 'Demasiadas solicitudes' })
   bulkRegister(@Body() dto: BulkRegisterDto) {
     return this.authService.bulkRegister(dto);
+  }
+
+  @Post('reset-password')
+  @HttpCode(HttpStatus.OK)
+  @UseGuards(ThrottleGuard)
+  @Throttle({ limit: 5, windowMs: 60_000 })
+  @ApiOperation({
+    summary: 'Restablecer contraseña',
+    description:
+      'Genera una nueva contraseña temporal y la envía por email al usuario. ' +
+      'Rate limit: 5 solicitudes/min por IP.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Si el email existe, se envió una nueva contraseña',
+  })
+  @ApiResponse({ status: 404, description: 'Email no encontrado o cuenta inactiva' })
+  @ApiResponse({ status: 429, description: 'Demasiadas solicitudes' })
+  resetPassword(@Body() dto: ResetPasswordDto) {
+    return this.authService.resetPassword(dto);
   }
 
   @Post('login')

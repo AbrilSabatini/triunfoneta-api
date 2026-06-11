@@ -4,9 +4,16 @@ import { InjectRepository } from '@nestjs/typeorm';
 import * as nodemailer from 'nodemailer';
 import { In, LessThanOrEqual, Repository } from 'typeorm';
 import { MailQueue, MailStatus, MailType } from './entities/mail-queue.entity';
+import { resetPasswordTemplate } from './templates/reset-password.template';
 import { welcomeTemplate } from './templates/welcome.template';
 
 export interface WelcomeEmailData {
+  fullName: string;
+  email: string;
+  temporaryPassword: string;
+}
+
+export interface ResetPasswordEmailData {
   fullName: string;
   email: string;
   temporaryPassword: string;
@@ -56,6 +63,21 @@ export class MailService {
     });
     const saved = await this.queueRepo.save(entry);
     // Intentar envío inmediato (no bloquea el registro)
+    this.dispatchOne(saved).catch(() => {});
+    return saved;
+  }
+
+  /**
+   * Encola un email de restablecimiento de contraseña.
+   */
+  async enqueueResetPassword(data: ResetPasswordEmailData): Promise<MailQueue> {
+    const entry = this.queueRepo.create({
+      type: MailType.RESET_PASSWORD,
+      toEmail: data.email,
+      payload: data,
+      status: MailStatus.PENDING,
+    });
+    const saved = await this.queueRepo.save(entry);
     this.dispatchOne(saved).catch(() => {});
     return saved;
   }
@@ -193,6 +215,8 @@ export class MailService {
     switch (entry.type) {
       case MailType.WELCOME:
         return welcomeTemplate(entry.payload as WelcomeEmailData);
+      case MailType.RESET_PASSWORD:
+        return resetPasswordTemplate(entry.payload as ResetPasswordEmailData);
       default:
         throw new Error(`Tipo de mail sin template: ${entry.type}`);
     }
@@ -202,6 +226,8 @@ export class MailService {
     switch (entry.type) {
       case MailType.WELCOME:
         return '¡Bienvenido/a a Triunfoneta!';
+      case MailType.RESET_PASSWORD:
+        return 'Tu nueva contraseña - Triunfoneta';
       default:
         return 'Triunfoneta';
     }
