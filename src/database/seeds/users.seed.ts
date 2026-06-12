@@ -9,7 +9,13 @@ const DEV_PASSWORD = process.env.USER_ADMIN_PASSWORD || 'triunfo123';
 const SEED_USERS = [
   // ─── Admin ────────────────────────────────────────────────────────────────
   {
-    email: 'admin@triunfo.com',
+    email: 'nachopaez168@gmail.com',
+    fullName: 'Admin Triunfoneta',
+    areaName: 'Innovación y proyectos',
+    role: UserRole.ADMIN,
+  },
+  {
+    email: 'abrilsabatini2004@gmail.com',
     fullName: 'Admin Triunfoneta',
     areaName: 'Innovación y proyectos',
     role: UserRole.ADMIN,
