@@ -279,7 +279,7 @@ export class PublicUserListItemDto {
   fullName: string;
 
   @Expose()
-  @ApiPropertyOptional({ example: '/uploads/avatars/abc.jpg', nullable: true })
+  @ApiPropertyOptional({ example: '/uploads/stickers/abc.jpg', nullable: true })
   avatarUrl: string | null;
 
   @Expose()

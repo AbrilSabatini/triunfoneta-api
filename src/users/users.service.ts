@@ -118,12 +118,6 @@ export class UsersService {
     return this.usersRepo.save(user);
   }
 
-  async updateAvatar(userId: number, avatarUrl: string): Promise<User> {
-    const user = await this.findById(userId);
-    user.avatarUrl = avatarUrl;
-    return this.usersRepo.save(user);
-  }
-
   // ─── Figurita propia ──────────────────────────────────────────────────────
 
   async createSticker(
@@ -195,7 +189,19 @@ export class UsersService {
     const sticker = await this.getMySticker(userId);
     sticker.photoUrl = photoUrl;
     sticker.useAvatar = false;
-    return this.stickersRepo.save(sticker);
+    const saved = await this.stickersRepo.save(sticker);
+
+    await Promise.all([
+      this.usersRepo.update(userId, { avatarUrl: photoUrl }),
+      this.pointsService.award(
+        userId,
+        await this.configsService.getNumber(ConfigType.STICKER_CREATION_POINTS),
+        PointReason.STICKER_CREATED,
+        saved.id,
+      ),
+    ]);
+
+    return saved;
   }
 
   // ─── Búsqueda pública de usuarios (para intercambios) ────────────────────
@@ -275,7 +281,19 @@ export class UsersService {
     }
     sticker.photoUrl = photoUrl;
     sticker.useAvatar = false;
-    return this.stickersRepo.save(sticker);
+    const saved = await this.stickersRepo.save(sticker);
+
+    await Promise.all([
+      this.usersRepo.update(targetUserId, { avatarUrl: photoUrl }),
+      this.pointsService.award(
+        targetUserId,
+        await this.configsService.getNumber(ConfigType.STICKER_CREATION_POINTS),
+        PointReason.STICKER_CREATED,
+        saved.id,
+      ),
+    ]);
+
+    return saved;
   }
 
   async changePassword(userId: number, dto: ChangePasswordDto): Promise<void> {

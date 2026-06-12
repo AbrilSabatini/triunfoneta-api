@@ -6,14 +6,7 @@ import { v4 as uuid } from 'uuid';
 const ALLOWED_TYPES = /image\/(jpeg|jpg|png|webp)/;
 const MAX_SIZE_MB = 5;
 
-export const multerAvatarConfig = {
-  storage: diskStorage({
-    destination: './uploads/avatars',
-    filename: (_req, file, cb) => {
-      const ext = extname(file.originalname).toLowerCase();
-      cb(null, `${uuid()}${ext}`);
-    },
-  }),
+export const multerImageConfig = {
   limits: {
     fileSize: MAX_SIZE_MB * 1024 * 1024,
   },
@@ -29,7 +22,7 @@ export const multerAvatarConfig = {
 };
 
 export const multerStickerConfig = {
-  ...multerAvatarConfig,
+  ...multerImageConfig,
   storage: diskStorage({
     destination: './uploads/stickers',
     filename: (_req, file, cb) => {

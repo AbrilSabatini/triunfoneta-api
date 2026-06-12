@@ -37,7 +37,7 @@ import {
   UpdateUserDto,
 } from './dto/users.dto';
 import { UserRole } from './entities/user.entity';
-import { multerAvatarConfig, multerStickerConfig } from './multer.config';
+import { multerStickerConfig } from './multer.config';
 import { UsersService } from './users.service';
 
 @ApiTags('Usuario')
@@ -119,7 +119,6 @@ export class UsersController {
         fullName: 'Ana García',
         role: 'user',
         points: 150,
-        avatarUrl: '/uploads/avatars/abc123.jpg',
         stickerCreated: true,
         isActive: true,
         area: { id: 3, name: 'Marketing', color: '#e63946', emoji: '🎯' },
@@ -144,47 +143,6 @@ export class UsersController {
   @ApiResponse({ status: 401, description: 'No autenticado' })
   updateMe(@Request() req, @Body() dto: UpdateUserDto) {
     return this.usersService.updateMe(req.user.id, dto);
-  }
-
-  @Post('users/me/avatar')
-  @UseGuards(JwtAuthGuard)
-  @UseInterceptors(FileInterceptor('file', multerAvatarConfig))
-  @ApiOperation({
-    summary: 'Subir foto de perfil',
-    description:
-      'Sube o reemplaza la foto de perfil del usuario (JPG, PNG o WebP, máx. 5MB). ' +
-      'Esta foto se usa en la app pero no en la figurita del álbum.',
-  })
-  @ApiConsumes('multipart/form-data')
-  @ApiBody({
-    schema: {
-      type: 'object',
-      properties: {
-        file: {
-          type: 'string',
-          format: 'binary',
-          description: 'Imagen JPG, PNG o WebP (máx. 5MB)',
-        },
-      },
-      required: ['file'],
-    },
-  })
-  @ApiResponse({
-    status: 201,
-    description: 'Avatar actualizado, devuelve el usuario con avatarUrl nuevo',
-  })
-  @ApiResponse({
-    status: 400,
-    description: 'Tipo de archivo no permitido o tamaño excedido',
-  })
-  async uploadAvatar(
-    @Request() req,
-    @UploadedFile() file: Express.Multer.File,
-  ) {
-    return this.usersService.updateAvatar(
-      req.user.id,
-      `/uploads/avatars/${file.filename}`,
-    );
   }
 
   // ─── Figurita propia ──────────────────────────────────────────────────────
@@ -357,7 +315,6 @@ export class UsersController {
           id: 2,
           fullName: 'Pablo García',
           area: { name: 'Comercial' },
-          avatarUrl: null,
         },
         sticker: { id: 7, nickname: 'Pabli', stickerNumber: 7, funFact: '...' },
       },
