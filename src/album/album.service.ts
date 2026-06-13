@@ -9,6 +9,7 @@ import { Cron, CronExpression } from '@nestjs/schedule';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
 
+import { PacksService } from '../packs/packs.service';
 import { UserSticker } from '../packs/entities/user-sticker.entity';
 import { getAlbumSections } from '../common/utils/album-progress.util';
 import { Sticker } from '../users/entities/sticker.entity';
@@ -63,6 +64,8 @@ export class AlbumService {
     private userRepo: Repository<User>,
 
     private dataSource: DataSource,
+
+    private packsService: PacksService,
   ) {}
 
   // ─── Álbum: progreso global ───────────────────────────────────────────────
@@ -353,6 +356,24 @@ export class AlbumService {
         trade.fromUserId,
         requested.stickerId,
       );
+
+      // Verificar áreas completadas para ambos usuarios tras el swap
+      const fromCompletions = await this.packsService.checkAreaCompletionsForUser(
+        trade.fromUserId,
+        manager,
+      );
+      const toCompletions = await this.packsService.checkAreaCompletionsForUser(
+        trade.toUserId,
+        manager,
+      );
+
+      if (fromCompletions.length > 0 || toCompletions.length > 0) {
+        this.logger.log(
+          `[TRADE] #${trade.id} áreas completadas: ` +
+            `emisor [${fromCompletions.map((c) => c.area).join(', ')}] ` +
+            `receptor [${toCompletions.map((c) => c.area).join(', ')}]`,
+        );
+      }
 
       trade.status = TradeStatus.ACCEPTED;
       const saved = await manager.save(TradeOffer, trade);
