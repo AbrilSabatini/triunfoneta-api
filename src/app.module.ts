@@ -9,6 +9,7 @@ import 'reflect-metadata';
 import { AlbumModule } from './album/album.module';
 import { AreasModule } from './areas/areas.module';
 import { AuthModule } from './auth/auth.module';
+import { BannersModule } from './banners/banners.module';
 import { MailModule } from './mail/mail.module';
 import { PacksModule } from './packs/packs.module';
 import { PointsModule } from './points/points.module';
@@ -30,6 +31,8 @@ import { TriviaAttempt } from './trivia/entities/trivia-attempt.entity';
 import { TriviaOption } from './trivia/entities/trivia-option.entity';
 import { TriviaQuestion } from './trivia/entities/trivia-question.entity';
 import { TriviaModule } from './trivia/trivia.module';
+import { BannerRead } from './banners/entities/banner-read.entity';
+import { Banner } from './banners/entities/banner.entity';
 import { Sticker } from './users/entities/sticker.entity';
 import { User } from './users/entities/user.entity';
 
@@ -57,6 +60,8 @@ import { User } from './users/entities/user.entity';
         TriviaOption,
         TriviaAttempt,
         Config,
+        Banner,
+        BannerRead,
       ],
       synchronize: true,
       logging: process.env.NODE_ENV === 'development',
@@ -69,6 +74,7 @@ import { User } from './users/entities/user.entity';
 
     AreasModule,
     AuthModule,
+    BannersModule,
     UsersModule,
     PointsModule,
     MailModule,
