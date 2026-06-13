@@ -210,6 +210,8 @@ export class UsersService {
     const sticker = await this.getMySticker(userId);
 
     const firstImageUpload = !sticker.photoUrl;
+    const reupload = sticker.photoUrl.startsWith('/upload');
+
     sticker.photoUrl = publicUrl;
     sticker.useAvatar = false;
     const saved = await this.stickersRepo.save(sticker);
@@ -217,6 +219,20 @@ export class UsersService {
     const tasks: Promise<any>[] = [
       this.usersRepo.update(userId, { avatarUrl: publicUrl }),
     ];
+
+    if (reupload) {
+      tasks.push(
+        this.pointsService.award(
+          userId,
+          await this.configsService.getNumber(
+            ConfigType.STICKER_REUPLOAD_POINTS,
+          ),
+          PointReason.STICKER_CREATED,
+          saved.id,
+        ),
+      );
+    }
+
     if (firstImageUpload) {
       tasks.push(
         this.pointsService.award(
@@ -323,6 +339,8 @@ export class UsersService {
       );
     }
     const firstImageUpload = !sticker.photoUrl;
+    const reupload = sticker.photoUrl.startsWith('/upload');
+
     sticker.photoUrl = publicUrl;
     sticker.useAvatar = false;
     const saved = await this.stickersRepo.save(sticker);
@@ -330,6 +348,20 @@ export class UsersService {
     const tasks: Promise<any>[] = [
       this.usersRepo.update(targetUserId, { avatarUrl: publicUrl }),
     ];
+
+    if (reupload) {
+      tasks.push(
+        this.pointsService.award(
+          targetUserId,
+          await this.configsService.getNumber(
+            ConfigType.STICKER_REUPLOAD_POINTS,
+          ),
+          PointReason.STICKER_CREATED,
+          saved.id,
+        ),
+      );
+    }
+
     if (firstImageUpload) {
       tasks.push(
         this.pointsService.award(
