@@ -334,6 +334,21 @@ export class PacksService {
   }
 
   /**
+   * Wrapper público para verificar áreas completadas después de actualizar
+   * la colección (intercambios, etc.). Obtiene el bonus de la config
+   * internamente.
+   */
+  async checkAreaCompletionsForUser(
+    userId: number,
+    manager: any,
+  ): Promise<Array<{ area: string; points: number }>> {
+    const areaBonus = await this.configsService.getNumber(
+      ConfigType.AREA_COMPLETION_POINTS,
+    );
+    return this.checkAreaCompletions(userId, manager, areaBonus);
+  }
+
+  /**
    * Verifica áreas completadas usando la tabla area_completions.
    * Reemplaza el hack de CRC-16 en referenceId de PointTransaction.
    */
