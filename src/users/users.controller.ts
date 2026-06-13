@@ -37,7 +37,7 @@ import {
   UpdateUserDto,
 } from './dto/users.dto';
 import { UserRole } from './entities/user.entity';
-import { multerStickerConfig } from './multer.config';
+import { generateFileName, multerSupabaseConfig } from './multer.config';
 import { UsersService } from './users.service';
 
 @ApiTags('Usuario')
@@ -233,7 +233,7 @@ export class UsersController {
 
   @Post('users/me/sticker/photo')
   @UseGuards(JwtAuthGuard)
-  @UseInterceptors(FileInterceptor('file', multerStickerConfig))
+  @UseInterceptors(FileInterceptor('file', multerSupabaseConfig))
   @ApiOperation({
     summary: 'Subir foto de figurita',
     description:
@@ -266,7 +266,7 @@ export class UsersController {
   ) {
     return this.usersService.updateStickerPhoto(
       req.user.id,
-      `/uploads/stickers/${file.filename}`,
+      file,
     );
   }
 
@@ -432,7 +432,7 @@ export class UsersController {
   @Post('admin/users/:userId/sticker/photo')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRole.ADMIN)
-  @UseInterceptors(FileInterceptor('file', multerStickerConfig))
+  @UseInterceptors(FileInterceptor('file', multerSupabaseConfig))
   @ApiOperation({
     summary: '[ADMIN] Subir foto de figurita de un usuario',
     description:
@@ -471,7 +471,7 @@ export class UsersController {
   ) {
     return this.usersService.uploadStickerPhotoByAdmin(
       userId,
-      `/uploads/stickers/${file.filename}`,
+      file,
     );
   }
 }

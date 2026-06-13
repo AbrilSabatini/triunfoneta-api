@@ -1,5 +1,5 @@
 import { BadRequestException } from '@nestjs/common';
-import { diskStorage } from 'multer';
+import { memoryStorage } from 'multer';
 import { extname } from 'path';
 import { v4 as uuid } from 'uuid';
 
@@ -21,13 +21,12 @@ export const multerImageConfig = {
   },
 };
 
-export const multerStickerConfig = {
+export const multerSupabaseConfig = {
   ...multerImageConfig,
-  storage: diskStorage({
-    destination: './uploads/stickers',
-    filename: (_req, file, cb) => {
-      const ext = extname(file.originalname).toLowerCase();
-      cb(null, `${uuid()}${ext}`);
-    },
-  }),
+  storage: memoryStorage(),
 };
+
+export function generateFileName(originalName: string): string {
+  const ext = extname(originalName).toLowerCase();
+  return `stickers/${uuid()}${ext}`;
+}

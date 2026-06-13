@@ -6,6 +6,7 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
 import { plainToInstance } from 'class-transformer';
@@ -14,6 +15,7 @@ import { ConfigsService } from '../configs/configs.service';
 import { ConfigType } from '../configs/entities/config.entity';
 import { PointReason } from '../points/entities/point-transaction.entity';
 import { PointsService } from '../points/points.service';
+import { SupabaseService } from '../supabase/supabase.service';
 import {
   ChangePasswordDto,
   CreateStickerDto,
@@ -26,6 +28,7 @@ import {
 } from './dto/users.dto';
 import { Sticker, StickerRarity } from './entities/sticker.entity';
 import { User, UserRole } from './entities/user.entity';
+import { generateFileName } from './multer.config';
 
 @Injectable()
 export class UsersService {
@@ -38,6 +41,8 @@ export class UsersService {
 
     private pointsService: PointsService,
     private configsService: ConfigsService,
+    private supabaseService: SupabaseService,
+    private configService: ConfigService,
   ) {}
 
   async listPublicUsers(
@@ -185,21 +190,46 @@ export class UsersService {
     return this.stickersRepo.save(sticker);
   }
 
-  async updateStickerPhoto(userId: number, photoUrl: string): Promise<Sticker> {
+  async updateStickerPhoto(
+    userId: number,
+    file: Express.Multer.File,
+  ): Promise<Sticker> {
+    const bucket = this.configService.get<string>(
+      'SUPABASE_STORAGE_BUCKET',
+      'triunfoneta',
+    );
+    const fileName = generateFileName(file.originalname);
+
+    const publicUrl = await this.supabaseService.uploadFile(
+      bucket,
+      fileName,
+      file.buffer,
+      file.mimetype,
+    );
+
     const sticker = await this.getMySticker(userId);
-    sticker.photoUrl = photoUrl;
+
+    const firstImageUpload = !sticker.photoUrl;
+    sticker.photoUrl = publicUrl;
     sticker.useAvatar = false;
     const saved = await this.stickersRepo.save(sticker);
 
-    await Promise.all([
-      this.usersRepo.update(userId, { avatarUrl: photoUrl }),
-      this.pointsService.award(
-        userId,
-        await this.configsService.getNumber(ConfigType.STICKER_CREATION_POINTS),
-        PointReason.STICKER_CREATED,
-        saved.id,
-      ),
-    ]);
+    const tasks: Promise<any>[] = [
+      this.usersRepo.update(userId, { avatarUrl: publicUrl }),
+    ];
+    if (firstImageUpload) {
+      tasks.push(
+        this.pointsService.award(
+          userId,
+          await this.configsService.getNumber(
+            ConfigType.STICKER_CREATION_POINTS,
+          ),
+          PointReason.STICKER_CREATED,
+          saved.id,
+        ),
+      );
+    }
+    await Promise.all(tasks);
 
     return saved;
   }
@@ -269,8 +299,21 @@ export class UsersService {
    */
   async uploadStickerPhotoByAdmin(
     targetUserId: number,
-    photoUrl: string,
+    file: Express.Multer.File,
   ): Promise<Sticker> {
+    const bucket = this.configService.get<string>(
+      'SUPABASE_STORAGE_BUCKET',
+      'triunfoneta',
+    );
+    const fileName = generateFileName(file.originalname);
+
+    const publicUrl = await this.supabaseService.uploadFile(
+      bucket,
+      fileName,
+      file.buffer,
+      file.mimetype,
+    );
+
     const sticker = await this.stickersRepo.findOne({
       where: { userId: targetUserId },
     });
@@ -279,19 +322,27 @@ export class UsersService {
         `El usuario #${targetUserId} todavía no tiene figurita.`,
       );
     }
-    sticker.photoUrl = photoUrl;
+    const firstImageUpload = !sticker.photoUrl;
+    sticker.photoUrl = publicUrl;
     sticker.useAvatar = false;
     const saved = await this.stickersRepo.save(sticker);
 
-    await Promise.all([
-      this.usersRepo.update(targetUserId, { avatarUrl: photoUrl }),
-      this.pointsService.award(
-        targetUserId,
-        await this.configsService.getNumber(ConfigType.STICKER_CREATION_POINTS),
-        PointReason.STICKER_CREATED,
-        saved.id,
-      ),
-    ]);
+    const tasks: Promise<any>[] = [
+      this.usersRepo.update(targetUserId, { avatarUrl: publicUrl }),
+    ];
+    if (firstImageUpload) {
+      tasks.push(
+        this.pointsService.award(
+          targetUserId,
+          await this.configsService.getNumber(
+            ConfigType.STICKER_CREATION_POINTS,
+          ),
+          PointReason.STICKER_CREATED,
+          saved.id,
+        ),
+      );
+    }
+    await Promise.all(tasks);
 
     return saved;
   }
