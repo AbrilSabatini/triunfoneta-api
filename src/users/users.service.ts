@@ -210,7 +210,7 @@ export class UsersService {
     const sticker = await this.getMySticker(userId);
 
     const firstImageUpload = !sticker.photoUrl;
-    const reupload = sticker.photoUrl.startsWith('/upload');
+    const reupload = sticker.photoUrl?.startsWith('/upload') ?? false;
 
     sticker.photoUrl = publicUrl;
     sticker.useAvatar = false;
