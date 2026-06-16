@@ -13,6 +13,7 @@ import { BannersModule } from './banners/banners.module';
 import { MailModule } from './mail/mail.module';
 import { PacksModule } from './packs/packs.module';
 import { PointsModule } from './points/points.module';
+import { RankingsModule } from './rankings/rankings.module';
 import { UsersModule } from './users/users.module';
 
 import { TradeOffer } from './album/entities/trade-offer.entity';
@@ -82,6 +83,7 @@ import { User } from './users/entities/user.entity';
     PacksModule,
     AlbumModule,
     TriviaModule,
+    RankingsModule,
     ConfigsModule,
   ],
 })
