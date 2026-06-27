@@ -9,6 +9,7 @@ import {
 
 export enum MatchStage {
   GROUP = 'Fase de grupos',
+  ROUND_OF_32 = 'Dieciseisavos de final',
   ROUND_OF_16 = 'Octavos de final',
   QUARTER = 'Cuartos de final',
   SEMI = 'Semifinal',
